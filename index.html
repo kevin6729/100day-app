@@ -14,6 +14,10 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7617624533409809"
+       crossorigin="anonymous"></script>
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif; background: #f5f5f5; }
@@ -94,6 +98,21 @@
     </div>
 
     <div id="main-screen" style="display:none;">
+      
+      <!-- 광고 영역 (챌린지 현황 최상단) -->
+      <div style="margin: 20px auto; max-width: 800px; text-align: center;">
+        <!-- 100일챌린지앱 수평형 -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-7617624533409809"
+             data-ad-slot="2934193554"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+      
       <div class="summary-board">
         <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
         <div id="summary-list"></div>
@@ -105,6 +124,13 @@
       </div>
       
       <div id="challenge-list"></div>
+      
+      <!-- 오늘의 명언 (맨 하단) -->
+      <div class="quote-container" style="margin-top: 40px;">
+        <h3 style="color: white; font-size: 1.2rem; margin-bottom: 15px;">💫 오늘의 명언</h3>
+        <div class="quote-text" id="bottom-quote-text"></div>
+        <div class="quote-author" id="bottom-quote-author"></div>
+      </div>
     </div>
 
     <div class="footer">
@@ -302,6 +328,13 @@
       document.getElementById('quote-text').innerText = `"${quote.text}"`;
       document.getElementById('quote-author').innerText = `- ${quote.author}`;
     }
+    
+    function showBottomQuote() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById('bottom-quote-text').innerText = `"${quote.text}"`;
+      document.getElementById('bottom-quote-author').innerText = `- ${quote.author}`;
+    }
+    
     showRandomQuote();
 
     let deferredPrompt;
@@ -365,6 +398,7 @@
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-screen').style.display = 'block';
       document.getElementById('welcome-msg').innerText = `${user.displayName}님의 100일 챌린지 현황`;
+      showBottomQuote();
     }
 
     async function loadChallenges(uid) {
