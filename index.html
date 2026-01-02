@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
   <title>100일 챌린지 - 습관 만들기 앱</title>
-  <meta name="description" content="매일 체크하면서 습관을 만드는 100일 챌린지. 운동, 다이어트, 독서, 영어공부 목표를 달성하세요">
-  <meta name="keywords" content="100일 챌린지, 습관 만들기, 다이어트, 운동, 영어, 독서">
+  <meta name="description" content="매일 체크하면서 습관을 만드는 100일 챌린지. 운동, 자산관리, 독서 목표를 달성하세요.">
+  <meta name="keywords" content="100일 챌린지, 습관 만들기, 재테크 습관, 자기계발, 경제적 자유">
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4285F4">
@@ -19,23 +19,23 @@
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif; background: #f5f5f5; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif; background: #f5f5f5; line-height: 1.6; }
     
     .app { max-width: 1000px; margin: 0 auto; padding: 10px; }
     
-    .entry-screen { text-align: center; padding: 80px 20px 40px; background: #fff; border-radius: 20px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    /* 진입 화면 스타일 */
+    .entry-screen { text-align: center; padding: 60px 20px 40px; background: #fff; border-radius: 20px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .entry-screen h1 { font-size: 2.2rem; margin-bottom: 15px; color: #1a1a1b; font-weight: 700; }
-    .entry-screen .subtitle { font-size: 1.2rem; color: #555; margin-bottom: 25px; line-height: 1.5; }
+    .entry-screen .subtitle { font-size: 1.2rem; color: #555; margin-bottom: 25px; }
     .btn-main { background: #4285F4; color: white; border: none; padding: 16px 35px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(66,133,244,0.3); transition: 0.2s; }
     .btn-main:hover { background: #3367d6; transform: translateY(-2px); }
     
-    .install-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; text-align: center; border-radius: 10px; margin: 20px auto; display: none; }
-    .install-banner button { background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    
+    /* 명언 영역 스타일 */
     .quote-container { margin: 30px auto; padding: 35px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(102,126,234,0.3); text-align: center; max-width: 800px; }
     .quote-text { color: white; font-size: 1.3rem; line-height: 1.7; font-weight: 600; margin-bottom: 15px; font-style: italic; }
     .quote-author { color: rgba(255,255,255,0.85); font-size: 1rem; }
     
+    /* 메인 대시보드 스타일 */
     .summary-board { background: #1a1a1b; color: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
     .summary-board h2 { color: #ff7a18; font-size: 1.6rem; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 25px; border-left: 5px solid #ff7a18; padding-left: 15px; }
     .summary-item { margin-bottom: 22px; }
@@ -43,36 +43,34 @@
     .summary-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 6px; overflow: hidden; }
     .summary-bar-fill { background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%); height: 100%; transition: width 1.2s; }
     
+    /* 챌린지 리스트 스타일 */
     .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .list-title { font-size: 1.4rem; border-left: 5px solid #ff7a18; padding-left: 15px; }
     .btn-add { background: #ff7a18; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    
     .project-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 25px; margin-bottom: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .grid-header h3 { font-size: 1.2rem; color: #1a1a1b; }
-    .del-btn { background: #fff0f0; border: 1px solid #ffcccc; color: #ff4444; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
-    
     .grid-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 20px 0; }
     .day-cell { aspect-ratio: 1/1; background: #f0f0f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; color: #777; transition: 0.2s; }
     .day-cell.done { background: #4CAF50; color: white; font-weight: bold; transform: scale(1.05); }
-    .day-cell:hover { transform: scale(1.1); }
-    
     .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin: 10px 0; }
     .progress-fill { background: #1A73E8; height: 100%; transition: width 0.3s; }
-    
-    .footer { background: #fff; border: 1px solid #eee; border-radius: 20px; padding: 35px; margin-top: 40px; line-height: 1.8; }
+    .del-btn { background: #fff0f0; border: 1px solid #ffcccc; color: #ff4444; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
+
+    /* 푸터 및 가이드 스타일 */
+    .footer { background: #fff; border: 1px solid #eee; border-radius: 20px; padding: 35px; margin-top: 40px; color: #444; }
     .footer h2 { color: #1a1a1b; font-size: 1.5rem; text-align: center; border-bottom: 2px solid #ff7a18; padding-bottom: 15px; margin-bottom: 20px; }
-    .footer h3 { color: #ff7a18; margin-top: 25px; font-size: 1.2rem; border-left: 4px solid #ff7a18; padding-left: 12px; }
-    .footer p { color: #555; margin-bottom: 15px; }
-    .footer ul { margin-left: 20px; line-height: 1.9; }
-    .footer li { margin-bottom: 10px; color: #555; }
+    .footer h3 { color: #ff7a18; margin-top: 25px; font-size: 1.2rem; border-left: 4px solid #ff7a18; padding-left: 12px; margin-bottom: 15px; }
+    .footer p { margin-bottom: 15px; }
+    .footer ul { margin-left: 20px; margin-bottom: 20px; }
+    .footer li { margin-bottom: 8px; }
     .highlight-box { background: #fff8f0; border-left: 4px solid #ff7a18; padding: 18px; margin: 20px 0; border-radius: 8px; }
     
+    .install-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; text-align: center; border-radius: 10px; margin: 20px auto; display: none; }
+    .install-banner button { background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
     @media (max-width: 600px) {
-      .entry-screen { padding: 50px 15px 30px; }
+      .entry-screen { padding: 40px 15px; }
       .entry-screen h1 { font-size: 1.8rem; }
-      .quote-container { padding: 25px 20px; }
-      .project-card { padding: 15px; }
       .grid-container { gap: 4px; }
       .day-cell { font-size: 9px; }
     }
@@ -95,7 +93,7 @@
         <div class="quote-author" id="quote-author"></div>
       </div>
 
-      <div style="margin: 20px auto; min-height: 100px; text-align: center;">
+      <div style="margin: 30px auto; min-height: 100px; text-align: center;">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-7617624533409809"
@@ -123,16 +121,39 @@
     </div>
 
     <div class="footer">
-      <h2>100일 챌린지란?</h2>
+      <h2>📢 앱 이용 가이드 및 성공 전략</h2>
+
       <div class="highlight-box">
-        <p><strong>매일 체크하면 습관이 됩니다</strong></p>
-        <p>심리학 연구에 따르면 새로운 습관을 만들려면 평균 <strong>66일에서 100일</strong>이 필요합니다. 매일 실천하고 체크하는 것이 성공의 핵심입니다.</p>
+        <p><strong>⚠️ 스레드(Threads)에서 오신 분들 필독!</strong></p>
+        <p>스레드 앱 내부 브라우저에서는 구글 보안 정책상 로그인이 차단되기 때문에, <strong>꼭 외부 브라우저를 이용해 주셔야 합니다.</strong></p>
+        <ul>
+          <li>오른쪽 상단 <strong>[점 3개]</strong> 또는 <strong>[공유]</strong> 아이콘 클릭</li>
+          <li><strong>[Safari로 열기]</strong> 또는 <strong>[Chrome으로 열기]</strong> 선택</li>
+          <li>이제 '챌린지 시작하기'를 눌러 구글 로그인을 진행해 주세요!</li>
+        </ul>
       </div>
-      <h3>✅ 추천 목표</h3>
-      <p>운동, 다이어트, 독서, 영어공부, 저축 등</p>
-      <p style="margin-top: 25px; text-align: center; color: #ff7a18; font-weight: bold;">
-        오늘 시작하지 않으면 100일 뒤에도 똑같습니다! 🚀
-      </p>
+
+      <h3>✅ 초간단 사용 방법</h3>
+      <ol style="margin-left: 20px; margin-bottom: 20px;">
+        <li><strong>챌린지 추가:</strong> 메인 화면에서 '+ 챌린지 추가' 버튼을 눌러 목표를 입력하세요.</li>
+        <li><strong>매일 체크:</strong> 미션을 수행한 날짜의 숫자를 터치하면 초록색으로 바뀝니다.</li>
+        <li><strong>데이터 보관:</strong> 구글 로그인을 통해 기기를 바꿔도 내 기록이 안전하게 유지됩니다.</li>
+      </ol>
+
+      <h3>💰 고단가 자산관리와 자기계발을 위한 습관 투자</h3>
+      <p>성공적인 <strong>자산 관리(Asset Management)</strong>와 <strong>재테크</strong>의 핵심은 꾸준한 루틴에 있습니다. 본 앱은 단순한 체크리스트를 넘어, 사용자의 <strong>생산성(Productivity)</strong>을 극대화하고 경제적 자유를 향한 <strong>포트폴리오</strong> 구축을 돕습니다.</p>
+
+      <div class="highlight-box">
+        <p><strong>📉 복리의 마법을 경험하세요</strong></p>
+        <p>매일 1%의 성장은 100일 뒤 거대한 복리 수익률로 돌아옵니다. 주식 시장 리포트 읽기, 부동산 임장 기록, 비트코인 트렌드 분석 등 <strong>고부가가치 실천</strong>을 100일간 지속해 보세요.</p>
+      </div>
+
+      <h3>🧠 왜 100일 챌린지인가요?</h3>
+      <p>심리학 연구에 따르면 뇌의 신경 가소성이 작동하여 습관이 완전히 내 것이 되는 데는 평균 66일에서 100일이 소요됩니다. <strong>SaaS 기반의 클라우드 시스템</strong>으로 설계된 이 앱은 여러분의 <strong>성과 지표(KPI)</strong> 관리를 완벽하게 지원합니다.</p>
+
+      <div style="text-align: center; margin-top: 30px; font-weight: bold; color: #ff7a18;">
+        오늘의 작은 실천이 100일 뒤 거대한 자산이 됩니다. 🚀
+      </div>
     </div>
   </div>
 
@@ -141,7 +162,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // 1. 전체 명언 데이터 (축약 없이 모두 포함)
+    // 1. 전체 명언 데이터 (140여개 전체 포함)
     const quotes = [
       { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
       { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
@@ -299,7 +320,7 @@
     }
     showRandomQuote();
 
-    // 2. Firebase 초기화
+    // 2. Firebase 초기 설정
     firebase.initializeApp({
       apiKey: "AIzaSyCPCVWCmHP1hL7fdph1i1C-NR_LqQhYfFk",
       authDomain: "miracle100-bfaf1.firebaseapp.com",
@@ -312,7 +333,7 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // 3. 앱 진입 로직 (버튼 클릭시에만 실행)
+    // 3. 핵심: 앱 진입 로직 (버튼 클릭 시에만 진입)
     async function enterApp() {
       const user = auth.currentUser;
       if (user) {
@@ -324,12 +345,12 @@
           showMainContents(result.user);
         } catch (error) {
           console.error("로그인 에러:", error);
-          alert("로그인에 실패했습니다.");
+          alert("로그인이 필요합니다. 스레드 이용 시 우측 상단 메뉴에서 '브라우저로 열기'를 먼저 해주세요!");
         }
       }
     }
 
-    // 로그인 상태 변화 감지
+    // 상태 변화 감지 (자동 전환은 하지 않음)
     auth.onAuthStateChanged(user => {
       if (!user) {
         document.getElementById('login-screen').style.display = 'block';
@@ -337,7 +358,7 @@
       }
     });
 
-    // 4. 메인 화면 전환 및 로드
+    // 4. 화면 전환 및 데이터 로드
     async function showMainContents(user) {
       await loadChallenges(user.uid);
       document.getElementById('login-screen').style.display = 'none';
@@ -345,7 +366,6 @@
       document.getElementById('welcome-msg').innerText = `${user.displayName}님의 100일 챌린지 현황`;
     }
 
-    // 5. 챌린지 데이터 함수들
     async function loadChallenges(uid) {
       const snapshot = await db.collection('challenges').where('uid', '==', uid).get();
       const listDiv = document.getElementById('challenge-list');
@@ -354,7 +374,7 @@
       summaryList.innerHTML = '';
 
       if (snapshot.empty) {
-        summaryList.innerHTML = '<p style="color:#ccc; font-size:0.9rem;">💡 챌린지를 추가하고 목표를 달성하세요!</p>';
+        summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가하고 첫걸음을 떼보세요!</p>';
         return;
       }
 
@@ -394,7 +414,7 @@
     }
 
     async function createNewChallenge() {
-      const title = prompt("목표를 입력하세요 (예: 매일 운동 30분):");
+      const title = prompt("달성하고 싶은 목표는 무엇인가요?");
       if (!title) return;
       await db.collection('challenges').add({
         uid: auth.currentUser.uid,
@@ -414,13 +434,13 @@
     }
 
     async function deleteChallenge(docId) {
-      if (confirm("정말 삭제하시겠습니까?")) {
+      if (confirm("삭제된 데이터는 복구할 수 없습니다. 정말 삭제할까요?")) {
         await db.collection('challenges').doc(docId).delete();
         loadChallenges(auth.currentUser.uid);
       }
     }
 
-    // 6. PWA 설치
+    // 5. PWA 설치 배너 제어
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
