@@ -8,7 +8,6 @@
   <meta name="description" content="매일 체크하면서 습관을 만드는 100일 챌린지. 운동, 다이어트, 독서, 영어공부 목표를 달성하세요">
   <meta name="keywords" content="100일 챌린지, 습관 만들기, 다이어트, 운동, 영어, 독서">
   
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4285F4">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -21,23 +20,19 @@
     
     .app { max-width: 1000px; margin: 0 auto; padding: 10px; }
     
-    /* 진입 화면 */
     .entry-screen { text-align: center; padding: 80px 20px 40px; background: #fff; border-radius: 20px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .entry-screen h1 { font-size: 2.2rem; margin-bottom: 15px; color: #1a1a1b; font-weight: 700; }
     .entry-screen .subtitle { font-size: 1.2rem; color: #555; margin-bottom: 25px; line-height: 1.5; }
     .btn-main { background: #4285F4; color: white; border: none; padding: 16px 35px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(66,133,244,0.3); transition: 0.2s; }
     .btn-main:hover { background: #3367d6; transform: translateY(-2px); }
     
-    /* PWA 배너 */
     .install-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; text-align: center; border-radius: 10px; margin: 20px auto; display: none; }
     .install-banner button { background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     
-    /* 명언 */
     .quote-container { margin: 30px auto; padding: 35px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(102,126,234,0.3); text-align: center; max-width: 800px; }
     .quote-text { color: white; font-size: 1.3rem; line-height: 1.7; font-weight: 600; margin-bottom: 15px; font-style: italic; }
     .quote-author { color: rgba(255,255,255,0.85); font-size: 1rem; }
     
-    /* 요약판 */
     .summary-board { background: #1a1a1b; color: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
     .summary-board h2 { color: #ff7a18; font-size: 1.6rem; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 25px; border-left: 5px solid #ff7a18; padding-left: 15px; }
     .summary-item { margin-bottom: 22px; }
@@ -45,7 +40,6 @@
     .summary-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 6px; overflow: hidden; }
     .summary-bar-fill { background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%); height: 100%; transition: width 1.2s; }
     
-    /* 챌린지 */
     .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .list-title { font-size: 1.4rem; border-left: 5px solid #ff7a18; padding-left: 15px; }
     .btn-add { background: #ff7a18; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; }
@@ -63,7 +57,6 @@
     .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin: 10px 0; }
     .progress-fill { background: #1A73E8; height: 100%; transition: width 0.3s; }
     
-    /* 설명 */
     .footer { background: #fff; border: 1px solid #eee; border-radius: 20px; padding: 35px; margin-top: 40px; line-height: 1.8; }
     .footer h2 { color: #1a1a1b; font-size: 1.5rem; text-align: center; border-bottom: 2px solid #ff7a18; padding-bottom: 15px; margin-bottom: 20px; }
     .footer h3 { color: #ff7a18; margin-top: 25px; font-size: 1.2rem; border-left: 4px solid #ff7a18; padding-left: 12px; }
@@ -154,7 +147,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // ⭐ 명언 150개
     const quotes = [
       { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
       { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
@@ -190,7 +182,7 @@
       { text: "가장 어두운 밤이 지나면 가장 밝은 아침이 온다", author: "익명" },
       { text: "목표를 이루는 유일한 방법은 행동하는 것이다", author: "월트 디즈니" },
       { text: "당신이 생각하는 것이 당신을 만든다", author: "붓다" },
-      { text: "불가능은 없다. 단어 자체가 'I'm possible'이라고 말하고 있다", author: "오드리 헵번" },
+      { text: "불가능은 없다. 단어 자체가 나는 가능하다고 말하고 있다", author: "오드리 헵번" },
       { text: "성공하려면 먼저 실패를 두려워하지 말아야 한다", author: "마이클 조던" },
       { text: "최고가 되려면 최선을 다해야 한다", author: "빈스 롬바르디" },
       { text: "지금 이 순간이 가장 중요하다", author: "익명" },
@@ -305,7 +297,6 @@
       { text: "매일 조금씩 나아가면 목표에 도달한다", author: "익명" }
     ];
 
-    // 랜덤 명언 표시
     function showRandomQuote() {
       const quote = quotes[Math.floor(Math.random() * quotes.length)];
       document.getElementById('quote-text').innerText = `"${quote.text}"`;
@@ -313,7 +304,6 @@
     }
     showRandomQuote();
 
-    // PWA 설치
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -331,14 +321,12 @@
       }
     }
 
-    // Service Worker 등록
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js');
       });
     }
 
-    // Firebase 설정
     firebase.initializeApp({
       apiKey: "AIzaSyCPCVWCmHP1hL7fdph1i1C-NR_LqQhYfFk",
       authDomain: "miracle100-bfaf1.firebaseapp.com",
@@ -351,16 +339,24 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    async function enterApp() {
-      const user = auth.currentUser;
-      if (user) {
-        await showMainContents(user);
-      } else {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then(result => showMainContents(result.user))
-          .catch(err => console.error(err));
-      }
+    function enterApp() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithRedirect(provider);
     }
+
+    auth.getRedirectResult().then(result => {
+      if (result.user) {
+        showMainContents(result.user);
+      }
+    }).catch(err => {
+      console.error('로그인 오류:', err);
+    });
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        showMainContents(user);
+      }
+    });
 
     async function showMainContents(user) {
       await loadChallenges(user.uid);
