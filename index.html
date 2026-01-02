@@ -341,20 +341,22 @@
 
     function enterApp() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithRedirect(provider);
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          console.log("로그인 성공:", result.user);
+        })
+        .catch((error) => {
+          console.error("로그인 에러:", error);
+          alert("로그인 중 오류가 발생했습니다: " + error.message);
+        });
     }
-
-    auth.getRedirectResult().then(result => {
-      if (result.user) {
-        showMainContents(result.user);
-      }
-    }).catch(err => {
-      console.error('로그인 오류:', err);
-    });
 
     auth.onAuthStateChanged(user => {
       if (user) {
         showMainContents(user);
+      } else {
+        document.getElementById('login-screen').style.display = 'block';
+        document.getElementById('main-screen').style.display = 'none';
       }
     });
 
