@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <title>100일 챌린지 - 습관 만들기 앱</title>
+  <meta name="description" content="매일 체크하면서 습관을 만드는 100일 챌린지. 운동, 다이어트, 독서, 영어공부 목표를 달성하세요">
+  <meta name="keywords" content="100일 챌린지, 습관 만들기, 다이어트, 운동, 영어, 독서">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4285F4">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif; background: #f5f5f5; }
+    
+    .app { max-width: 1000px; margin: 0 auto; padding: 10px; }
+    
+    /* 진입 화면 */
+    .entry-screen { text-align: center; padding: 80px 20px 40px; background: #fff; border-radius: 20px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .entry-screen h1 { font-size: 2.2rem; margin-bottom: 15px; color: #1a1a1b; font-weight: 700; }
+    .entry-screen .subtitle { font-size: 1.2rem; color: #555; margin-bottom: 25px; line-height: 1.5; }
+    .btn-main { background: #4285F4; color: white; border: none; padding: 16px 35px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(66,133,244,0.3); transition: 0.2s; }
+    .btn-main:hover { background: #3367d6; transform: translateY(-2px); }
+    
+    /* PWA 배너 */
+    .install-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; text-align: center; border-radius: 10px; margin: 20px auto; display: none; }
+    .install-banner button { background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    
+    /* 명언 */
+    .quote-container { margin: 30px auto; padding: 35px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(102,126,234,0.3); text-align: center; max-width: 800px; }
+    .quote-text { color: white; font-size: 1.3rem; line-height: 1.7; font-weight: 600; margin-bottom: 15px; font-style: italic; }
+    .quote-author { color: rgba(255,255,255,0.85); font-size: 1rem; }
+    
+    /* 요약판 */
+    .summary-board { background: #1a1a1b; color: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+    .summary-board h2 { color: #ff7a18; font-size: 1.6rem; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 25px; border-left: 5px solid #ff7a18; padding-left: 15px; }
+    .summary-item { margin-bottom: 22px; }
+    .summary-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; }
+    .summary-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 6px; overflow: hidden; }
+    .summary-bar-fill { background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%); height: 100%; transition: width 1.2s; }
+    
+    /* 챌린지 */
+    .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .list-title { font-size: 1.4rem; border-left: 5px solid #ff7a18; padding-left: 15px; }
+    .btn-add { background: #ff7a18; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    
+    .project-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 25px; margin-bottom: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .grid-header h3 { font-size: 1.2rem; color: #1a1a1b; }
+    .del-btn { background: #fff0f0; border: 1px solid #ffcccc; color: #ff4444; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
+    
+    .grid-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 20px 0; }
+    .day-cell { aspect-ratio: 1/1; background: #f0f0f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; color: #777; transition: 0.2s; }
+    .day-cell.done { background: #4CAF50; color: white; font-weight: bold; transform: scale(1.05); }
+    .day-cell:hover { transform: scale(1.1); }
+    
+    .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin: 10px 0; }
+    .progress-fill { background: #1A73E8; height: 100%; transition: width 0.3s; }
+    
+    /* 설명 */
+    .footer { background: #fff; border: 1px solid #eee; border-radius: 20px; padding: 35px; margin-top: 40px; line-height: 1.8; }
+    .footer h2 { color: #1a1a1b; font-size: 1.5rem; text-align: center; border-bottom: 2px solid #ff7a18; padding-bottom: 15px; margin-bottom: 20px; }
+    .footer h3 { color: #ff7a18; margin-top: 25px; font-size: 1.2rem; border-left: 4px solid #ff7a18; padding-left: 12px; }
+    .footer p { color: #555; margin-bottom: 15px; }
+    .footer ul { margin-left: 20px; line-height: 1.9; }
+    .footer li { margin-bottom: 10px; color: #555; }
+    .highlight-box { background: #fff8f0; border-left: 4px solid #ff7a18; padding: 18px; margin: 20px 0; border-radius: 8px; }
+    
+    @media (max-width: 600px) {
+      .entry-screen { padding: 50px 15px 30px; }
+      .entry-screen h1 { font-size: 1.8rem; }
+      .quote-container { padding: 25px 20px; }
+      .project-card { padding: 15px; }
+      .grid-container { gap: 4px; }
+      .day-cell { font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="install-banner" class="install-banner">
+      <div>📱 홈 화면에 추가하여 앱처럼 사용하세요!</div>
+      <button onclick="installPWA()">홈 화면에 추가</button>
+    </div>
+
+    <div id="login-screen" class="entry-screen">
+      <h1>🔥 100일 챌린지</h1>
+      <p class="subtitle">매일 체크하고 목표 달성!</p>
+      <button class="btn-main" onclick="enterApp()">챌린지 시작하기</button>
+      
+      <div class="quote-container">
+        <div class="quote-text" id="quote-text"></div>
+        <div class="quote-author" id="quote-author"></div>
+      </div>
+    </div>
+
+    <div id="main-screen" style="display:none;">
+      <div class="summary-board">
+        <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
+        <div id="summary-list"></div>
+      </div>
+
+      <div class="list-header">
+        <h2 class="list-title">나의 챌린지</h2>
+        <button class="btn-add" onclick="createNewChallenge()">+ 챌린지 추가</button>
+      </div>
+      
+      <div id="challenge-list"></div>
+    </div>
+
+    <div class="footer">
+      <h2>100일 챌린지란?</h2>
+      
+      <div class="highlight-box">
+        <p><strong>매일 체크하면 습관이 됩니다</strong></p>
+        <p>심리학 연구에 따르면 새로운 습관을 만들려면 평균 <strong>66일에서 100일</strong>이 필요합니다. 매일 실천하고 체크하는 것이 성공의 핵심입니다.</p>
+      </div>
+
+      <h3>✅ 이런 목표를 달성하세요</h3>
+      <ul>
+        <li><strong>운동:</strong> 매일 30분 운동하기, 헬스장 가기</li>
+        <li><strong>다이어트:</strong> 물 2L 마시기, 간식 안 먹기</li>
+        <li><strong>독서:</strong> 하루 30페이지 읽기</li>
+        <li><strong>영어:</strong> 매일 영단어 20개 외우기</li>
+        <li><strong>저축:</strong> 하루 5천원 모으기, 가계부 쓰기</li>
+      </ul>
+
+      <h3>📱 간단한 사용 방법</h3>
+      <ul>
+        <li><strong>1단계:</strong> "챌린지 추가" 버튼으로 목표 입력</li>
+        <li><strong>2단계:</strong> 달성한 날의 숫자 클릭 (초록색 체크)</li>
+        <li><strong>3단계:</strong> 진행률 확인하면서 100일 완주!</li>
+      </ul>
+
+      <div class="highlight-box">
+        <p><strong>🔥 성공 비결: 28일 → 66일 → 100일</strong></p>
+        <p>처음 28일을 완주하면 습관의 기초가 만들어지고, 66일이 지나면 자동으로 몸이 움직이게 됩니다. 100일을 채우면 완전히 내 것이 됩니다!</p>
+      </div>
+
+      <p style="margin-top: 25px; text-align: center; color: #ff7a18; font-weight: bold; font-size: 1.1rem;">
+        오늘 시작하지 않으면 100일 뒤에도 똑같습니다!<br>지금 바로 첫 번째 챌린지를 시작하세요 🚀
+      </p>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ⭐ 명언 150개
+    const quotes = [
+      { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
+      { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
+      { text: "위대한 성취는 작은 시작에서 비롯됩니다", author: "공자" },
+      { text: "꿈을 이루기 위해서는 먼저 깨어나야 한다", author: "조엘 브라운" },
+      { text: "성공의 비결은 시작하는 것이다", author: "마크 트웨인" },
+      { text: "당신이 할 수 있다고 믿든, 할 수 없다고 믿든, 당신이 옳다", author: "헨리 포드" },
+      { text: "노력 없이 얻는 것은 아무것도 없다", author: "토마스 에디슨" },
+      { text: "실패는 성공의 어머니다", author: "토마스 에디슨" },
+      { text: "천 리 길도 한 걸음부터", author: "노자" },
+      { text: "작은 기회로부터 위대한 업적이 시작된다", author: "데모스테네스" },
+      { text: "오늘의 나는 어제의 선택이 만든 결과다", author: "익명" },
+      { text: "꾸준함은 천재를 이긴다", author: "익명" },
+      { text: "포기하지 않으면 실패하지 않는다", author: "잭 마" },
+      { text: "성공은 습관의 결과다", author: "아리스토텔레스" },
+      { text: "오늘이 남은 인생의 첫날이다", author: "익명" },
+      { text: "행동이 모든 성공의 기초다", author: "파블로 피카소" },
+      { text: "준비된 자에게 기회는 온다", author: "루이 파스퇴르" },
+      { text: "미래는 현재 우리가 무엇을 하는가에 달려있다", author: "마하트마 간디" },
+      { text: "목표가 없으면 아무것도 이룰 수 없다", author: "지그 지글러" },
+      { text: "변화는 선택이다. 성장은 결과다", author: "익명" },
+      { text: "할 수 있다고 생각하면 할 수 있다", author: "버질" },
+      { text: "성공의 열쇠는 시작하는 용기다", author: "존 베린저" },
+      { text: "멈추지 않는 한 얼마나 천천히 가도 상관없다", author: "공자" },
+      { text: "당신의 한계는 당신의 상상력뿐이다", author: "익명" },
+      { text: "작은 진보라도 진보는 진보다", author: "익명" },
+      { text: "노력하는 자는 꿈을 말하고, 노력하지 않는 자는 불만을 말한다", author: "익명" },
+      { text: "오늘 심은 씨앗이 내일의 열매가 된다", author: "익명" },
+      { text: "성공은 마음먹기에 달려있다", author: "나폴레옹 힐" },
+      { text: "당신이 바꾸고 싶은 변화가 되어라", author: "마하트마 간디" },
+      { text: "성공은 열정을 잃지 않고 실패에서 실패로 걸어가는 것이다", author: "윈스턴 처칠" },
+      { text: "행운은 준비와 기회가 만났을 때 일어난다", author: "세네카" },
+      { text: "가장 어두운 밤이 지나면 가장 밝은 아침이 온다", author: "익명" },
+      { text: "목표를 이루는 유일한 방법은 행동하는 것이다", author: "월트 디즈니" },
+      { text: "당신이 생각하는 것이 당신을 만든다", author: "붓다" },
+      { text: "불가능은 없다. 단어 자체가 'I'm possible'이라고 말하고 있다", author: "오드리 헵번" },
+      { text: "성공하려면 먼저 실패를 두려워하지 말아야 한다", author: "마이클 조던" },
+      { text: "최고가 되려면 최선을 다해야 한다", author: "빈스 롬바르디" },
+      { text: "지금 이 순간이 가장 중요하다", author: "익명" },
+      { text: "위대함은 결코 주어지는 것이 아니라 쟁취하는 것이다", author: "드웨인 존슨" },
+      { text: "당신의 시간은 제한되어 있다. 다른 사람의 삶을 살지 마라", author: "스티브 잡스" },
+      { text: "성공의 90%는 그냥 나타나는 것이다", author: "우디 앨런" },
+      { text: "실패한 적이 없는 사람은 새로운 것을 시도한 적이 없는 사람이다", author: "알버트 아인슈타인" },
+      { text: "인내와 끈기는 무적이다", author: "익명" },
+      { text: "어제로부터 배우고, 오늘을 살고, 내일을 희망하라", author: "알버트 아인슈타인" },
+      { text: "긍정적인 태도는 긍정적인 결과를 만든다", author: "익명" },
+      { text: "목표는 꿈에 기한을 정한 것이다", author: "나폴레옹 힐" },
+      { text: "진정한 실패는 시도하지 않는 것이다", author: "조지 클루니" },
+      { text: "성공은 준비가 기회를 만났을 때 일어난다", author: "바비 언서" },
+      { text: "당신이 상상할 수 있다면, 이룰 수 있다", author: "월트 디즈니" },
+      { text: "지금 시작하라. 완벽한 때는 없다", author: "익명" },
+      { text: "당신의 유일한 한계는 당신 자신이다", author: "익명" },
+      { text: "성공은 결코 우연이 아니다", author: "익명" },
+      { text: "모든 성취는 시도하려는 의지에서 시작된다", author: "제임스 워너" },
+      { text: "꿈을 꾸는 것만으로는 부족하다. 행동하라", author: "익명" },
+      { text: "어려운 일을 하는 것이 쉬운 삶을 만든다", author: "레스 브라운" },
+      { text: "성공의 비결은 목표에 집중하는 것이다", author: "익명" },
+      { text: "당신이 원하는 것을 얻기 위해 노력하라", author: "익명" },
+      { text: "오늘 최선을 다하면 내일은 더 나아진다", author: "익명" },
+      { text: "성공은 준비와 노력의 결과다", author: "콜린 파월" },
+      { text: "당신의 태도가 당신의 고도를 결정한다", author: "지그 지글러" },
+      { text: "두려움을 극복하는 유일한 방법은 행동하는 것이다", author: "익명" },
+      { text: "매일 조금씩 나아지는 것이 완벽으로 가는 길이다", author: "익명" },
+      { text: "성공하는 사람과 실패하는 사람의 차이는 행동이다", author: "익명" },
+      { text: "목표를 향해 한 걸음씩 나아가라", author: "익명" },
+      { text: "오늘의 고통은 내일의 힘이 된다", author: "익명" },
+      { text: "성공은 매일 반복되는 작은 습관의 결과다", author: "익명" },
+      { text: "당신이 할 수 있는 최선을 다하라", author: "앤드류 카네기" },
+      { text: "성공은 마지막까지 포기하지 않는 자의 것이다", author: "익명" },
+      { text: "당신의 현재는 과거의 선택, 미래는 오늘의 선택이다", author: "익명" },
+      { text: "목표를 세우고 계획을 실행하라", author: "익명" },
+      { text: "성공하려면 먼저 시작해야 한다", author: "익명" },
+      { text: "노력은 배신하지 않는다", author: "익명" },
+      { text: "오늘 하루를 최선으로 살아라", author: "익명" },
+      { text: "성공은 준비된 자에게만 온다", author: "익명" },
+      { text: "당신의 꿈은 당신의 노력만큼 커진다", author: "익명" },
+      { text: "포기하지 않는 한 가능성은 무한하다", author: "익명" },
+      { text: "매일 성장하는 자신을 만들어라", author: "익명" },
+      { text: "성공의 지름길은 없다. 꾸준함이 답이다", author: "익명" },
+      { text: "당신의 노력이 당신의 미래를 만든다", author: "익명" },
+      { text: "목표를 향한 여정을 즐겨라", author: "익명" },
+      { text: "성공은 하루아침에 오지 않는다", author: "익명" },
+      { text: "당신이 할 수 있다고 믿으면 반은 이룬 것이다", author: "시어도어 루스벨트" },
+      { text: "실패를 두려워하지 말고 도전하라", author: "익명" },
+      { text: "매일 조금씩 발전하는 것이 성공이다", author: "익명" },
+      { text: "당신의 한계를 넘어서라", author: "익명" },
+      { text: "성공은 올바른 습관에서 시작된다", author: "익명" },
+      { text: "오늘 할 수 있는 일을 미루지 마라", author: "익명" },
+      { text: "당신의 목표를 명확히 하라", author: "익명" },
+      { text: "성공하는 사람은 끝까지 간다", author: "익명" },
+      { text: "당신의 열정이 성공을 만든다", author: "익명" },
+      { text: "매일 최선을 다하는 것이 성공의 시작이다", author: "익명" },
+      { text: "목표를 이루기 위해 행동하라", author: "익명" },
+      { text: "성공은 계획과 실행의 결과다", author: "익명" },
+      { text: "당신의 노력은 헛되지 않는다", author: "익명" },
+      { text: "오늘의 선택이 내일을 만든다", author: "익명" },
+      { text: "성공하려면 집중하라", author: "익명" },
+      { text: "당신의 가능성을 믿으라", author: "익명" },
+      { text: "매일 성장하는 삶을 살아라", author: "익명" },
+      { text: "목표를 향해 꾸준히 나아가라", author: "익명" },
+      { text: "성공은 당신이 만드는 것이다", author: "익명" },
+      { text: "당신의 미래는 오늘 시작된다", author: "익명" },
+      { text: "노력하는 만큼 성장한다", author: "익명" },
+      { text: "성공하려면 포기하지 마라", author: "익명" },
+      { text: "당신의 꿈을 현실로 만들어라", author: "익명" },
+      { text: "매일 한 걸음씩 앞으로 나아가라", author: "익명" },
+      { text: "목표를 이루는 열쇠는 꾸준함이다", author: "익명" },
+      { text: "성공은 당신의 선택이다", author: "익명" },
+      { text: "당신의 노력이 기적을 만든다", author: "익명" },
+      { text: "오늘 최선을 다하는 것이 성공이다", author: "익명" },
+      { text: "성공하려면 먼저 믿어야 한다", author: "익명" },
+      { text: "당신의 가능성은 무한하다", author: "익명" },
+      { text: "매일 도전하는 삶을 살아라", author: "익명" },
+      { text: "목표를 향한 열정을 잃지 마라", author: "익명" },
+      { text: "성공은 준비된 자의 것이다", author: "익명" },
+      { text: "당신의 행동이 미래를 결정한다", author: "익명" },
+      { text: "노력 없이는 아무것도 이룰 수 없다", author: "익명" },
+      { text: "성공하려면 계속 나아가라", author: "익명" },
+      { text: "당신의 꿈을 포기하지 마라", author: "익명" },
+      { text: "매일 성장하는 자신을 발견하라", author: "익명" },
+      { text: "목표를 이루기 위해 최선을 다하라", author: "익명" },
+      { text: "성공은 당신의 태도에 달려있다", author: "익명" },
+      { text: "당신의 노력은 반드시 보상받는다", author: "익명" },
+      { text: "오늘 시작하지 않으면 내일도 없다", author: "익명" },
+      { text: "성공하려면 행동으로 증명하라", author: "익명" },
+      { text: "당신의 미래는 당신 손에 있다", author: "익명" },
+      { text: "매일 노력하는 것이 성공의 비결이다", author: "익명" },
+      { text: "목표를 향해 끊임없이 도전하라", author: "익명" },
+      { text: "성공은 당신이 얼마나 원하느냐에 달려있다", author: "익명" },
+      { text: "당신의 열정이 길을 만든다", author: "익명" },
+      { text: "노력하는 자만이 성공한다", author: "익명" },
+      { text: "성공하려면 오늘 행동하라", author: "익명" },
+      { text: "당신의 꿈은 당신의 것이다", author: "익명" },
+      { text: "매일 최선을 다하면 기적이 일어난다", author: "익명" },
+      { text: "목표를 이루는 것은 당신의 선택이다", author: "익명" },
+      { text: "성공은 포기하지 않는 자의 몫이다", author: "익명" },
+      { text: "당신의 노력이 당신을 변화시킨다", author: "익명" },
+      { text: "오늘의 노력이 내일의 성공을 만든다", author: "익명" },
+      { text: "성공하려면 꿈을 크게 가져라", author: "익명" },
+      { text: "당신의 가능성을 의심하지 마라", author: "익명" },
+      { text: "매일 성장하는 습관을 만들어라", author: "익명" },
+      { text: "목표를 향해 한 걸음씩 전진하라", author: "익명" },
+      { text: "성공은 당신의 결단에서 시작된다", author: "익명" },
+      { text: "당신의 미래는 오늘 만들어진다", author: "익명" },
+      { text: "노력하는 삶이 가치 있는 삶이다", author: "익명" },
+      { text: "성공하려면 지금 바로 시작하라", author: "익명" },
+      { text: "당신의 꿈을 실현하라", author: "익명" },
+      { text: "매일 조금씩 나아가면 목표에 도달한다", author: "익명" }
+    ];
+
+    // 랜덤 명언 표시
+    function showRandomQuote() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById('quote-text').innerText = `"${quote.text}"`;
+      document.getElementById('quote-author').innerText = `- ${quote.author}`;
+    }
+    showRandomQuote();
+
+    // PWA 설치
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-banner').style.display = 'block';
+    });
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('install-banner').style.display = 'none';
+        });
+      }
+    }
+
+    // Service Worker 등록
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+
+    // Firebase 설정
+    firebase.initializeApp({
+      apiKey: "AIzaSyCPCVWCmHP1hL7fdph1i1C-NR_LqQhYfFk",
+      authDomain: "miracle100-bfaf1.firebaseapp.com",
+      projectId: "miracle100-bfaf1",
+      storageBucket: "miracle100-bfaf1.firebasestorage.app",
+      messagingSenderId: "367375464724",
+      appId: "1:367375464724:web:6fccf8438a9a070f3aea01"
+    });
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    async function enterApp() {
+      const user = auth.currentUser;
+      if (user) {
+        await showMainContents(user);
+      } else {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then(result => showMainContents(result.user))
+          .catch(err => console.error(err));
+      }
+    }
+
+    async function showMainContents(user) {
+      await loadChallenges(user.uid);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-screen').style.display = 'block';
+      document.getElementById('welcome-msg').innerText = `${user.displayName}님의 100일 챌린지 현황`;
+    }
+
+    async function loadChallenges(uid) {
+      const snapshot = await db.collection('challenges').where('uid', '==', uid).get();
+      const listDiv = document.getElementById('challenge-list');
+      const summaryList = document.getElementById('summary-list');
+      listDiv.innerHTML = '';
+      summaryList.innerHTML = '';
+
+      if (snapshot.empty) {
+        summaryList.innerHTML = '<p style="color:#ccc; font-size:0.9rem;">💡 챌린지를 추가하고 목표 달성을 시작하세요!</p>';
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const completedDays = data.completedDays || [];
+        const progress = Math.round((completedDays.length / 100) * 100);
+
+        summaryList.innerHTML += `
+          <div class="summary-item">
+            <div class="summary-info"><span>🔥 ${data.title}</span><span>${progress}%</span></div>
+            <div class="summary-bar-bg"><div class="summary-bar-fill" style="width:${progress}%"></div></div>
+          </div>
+        `;
+
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.innerHTML = `
+          <div class="grid-header">
+            <h3>${data.title}</h3>
+            <button class="del-btn" onclick="deleteChallenge('${doc.id}')">삭제</button>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" style="width:${progress}%"></div></div>
+          <div class="grid-container" id="grid-${doc.id}"></div>
+        `;
+        listDiv.appendChild(card);
+
+        const grid = document.getElementById(`grid-${doc.id}`);
+        for (let i = 1; i <= 100; i++) {
+          const cell = document.createElement('div');
+          cell.className = `day-cell ${completedDays.includes(i) ? 'done' : ''}`;
+          cell.innerText = i;
+          cell.onclick = () => toggleDay(doc.id, i, completedDays);
+          grid.appendChild(cell);
+        }
+      });
+    }
+
+    async function createNewChallenge() {
+      const title = prompt("어떤 챌린지를 시작할까요?\n\n예시:\n- 매일 운동 30분\n- 영어 단어 20개\n- 물 2L 마시기");
+      if (!title) return;
+      await db.collection('challenges').add({ 
+        uid: auth.currentUser.uid, 
+        title, 
+        completedDays: [], 
+        createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+      });
+      loadChallenges(auth.currentUser.uid);
+    }
+
+    async function toggleDay(docId, day, completedDays) {
+      const newDays = completedDays.includes(day) 
+        ? completedDays.filter(d => d !== day) 
+        : [...completedDays, day];
+      await db.collection('challenges').doc(docId).update({ completedDays: newDays });
+      loadChallenges(auth.currentUser.uid);
+    }
+
+    async function deleteChallenge(docId) {
+      if (confirm("정말 삭제할까요?\n\n⚠️ 삭제하면 복구할 수 없습니다.")) {
+        await db.collection('challenges').doc(docId).delete();
+        loadChallenges(auth.currentUser.uid);
+      }
+    }
+  </script>
+</body>
+</html>
