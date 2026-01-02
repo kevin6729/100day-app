@@ -14,7 +14,6 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   
-  <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7617624533409809"
        crossorigin="anonymous"></script>
   
@@ -95,13 +94,8 @@
         <div class="quote-text" id="quote-text"></div>
         <div class="quote-author" id="quote-author"></div>
       </div>
-    </div>
 
-    <div id="main-screen" style="display:none;">
-      
-      <!-- 광고 영역 (챌린지 현황 최상단) -->
-      <div style="margin: 20px auto; max-width: 800px; text-align: center;">
-        <!-- 100일챌린지앱 수평형 -->
+      <div style="margin: 20px auto; min-height: 100px; text-align: center;">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-7617624533409809"
@@ -112,7 +106,9 @@
              (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
       </div>
-      
+    </div>
+
+    <div id="main-screen" style="display:none;">
       <div class="summary-board">
         <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
         <div id="summary-list"></div>
@@ -124,46 +120,18 @@
       </div>
       
       <div id="challenge-list"></div>
-      
-      <!-- 오늘의 명언 (맨 하단) -->
-      <div class="quote-container" style="margin-top: 40px;">
-        <h3 style="color: white; font-size: 1.2rem; margin-bottom: 15px;">💫 오늘의 명언</h3>
-        <div class="quote-text" id="bottom-quote-text"></div>
-        <div class="quote-author" id="bottom-quote-author"></div>
-      </div>
     </div>
 
     <div class="footer">
       <h2>100일 챌린지란?</h2>
-      
       <div class="highlight-box">
         <p><strong>매일 체크하면 습관이 됩니다</strong></p>
         <p>심리학 연구에 따르면 새로운 습관을 만들려면 평균 <strong>66일에서 100일</strong>이 필요합니다. 매일 실천하고 체크하는 것이 성공의 핵심입니다.</p>
       </div>
-
-      <h3>✅ 이런 목표를 달성하세요</h3>
-      <ul>
-        <li><strong>운동:</strong> 매일 30분 운동하기, 헬스장 가기</li>
-        <li><strong>다이어트:</strong> 물 2L 마시기, 간식 안 먹기</li>
-        <li><strong>독서:</strong> 하루 30페이지 읽기</li>
-        <li><strong>영어:</strong> 매일 영단어 20개 외우기</li>
-        <li><strong>저축:</strong> 하루 5천원 모으기, 가계부 쓰기</li>
-      </ul>
-
-      <h3>📱 간단한 사용 방법</h3>
-      <ul>
-        <li><strong>1단계:</strong> "챌린지 추가" 버튼으로 목표 입력</li>
-        <li><strong>2단계:</strong> 달성한 날의 숫자 클릭 (초록색 체크)</li>
-        <li><strong>3단계:</strong> 진행률 확인하면서 100일 완주!</li>
-      </ul>
-
-      <div class="highlight-box">
-        <p><strong>🔥 성공 비결: 28일 → 66일 → 100일</strong></p>
-        <p>처음 28일을 완주하면 습관의 기초가 만들어지고, 66일이 지나면 자동으로 몸이 움직이게 됩니다. 100일을 채우면 완전히 내 것이 됩니다!</p>
-      </div>
-
-      <p style="margin-top: 25px; text-align: center; color: #ff7a18; font-weight: bold; font-size: 1.1rem;">
-        오늘 시작하지 않으면 100일 뒤에도 똑같습니다!<br>지금 바로 첫 번째 챌린지를 시작하세요 🚀
+      <h3>✅ 추천 목표</h3>
+      <p>운동, 다이어트, 독서, 영어공부, 저축 등</p>
+      <p style="margin-top: 25px; text-align: center; color: #ff7a18; font-weight: bold;">
+        오늘 시작하지 않으면 100일 뒤에도 똑같습니다! 🚀
       </p>
     </div>
   </div>
@@ -173,6 +141,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
+    // 1. 전체 명언 데이터 (축약 없이 모두 포함)
     const quotes = [
       { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
       { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
@@ -328,38 +297,9 @@
       document.getElementById('quote-text').innerText = `"${quote.text}"`;
       document.getElementById('quote-author').innerText = `- ${quote.author}`;
     }
-    
-    function showBottomQuote() {
-      const quote = quotes[Math.floor(Math.random() * quotes.length)];
-      document.getElementById('bottom-quote-text').innerText = `"${quote.text}"`;
-      document.getElementById('bottom-quote-author').innerText = `- ${quote.author}`;
-    }
-    
     showRandomQuote();
 
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('install-banner').style.display = 'block';
-    });
-
-    function installPWA() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-          deferredPrompt = null;
-          document.getElementById('install-banner').style.display = 'none';
-        });
-      }
-    }
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
-
+    // 2. Firebase 초기화
     firebase.initializeApp({
       apiKey: "AIzaSyCPCVWCmHP1hL7fdph1i1C-NR_LqQhYfFk",
       authDomain: "miracle100-bfaf1.firebaseapp.com",
@@ -372,35 +312,40 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function enterApp() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then((result) => {
-          console.log("로그인 성공:", result.user);
-        })
-        .catch((error) => {
-          console.error("로그인 에러:", error);
-          alert("로그인 중 오류가 발생했습니다: " + error.message);
-        });
-    }
-
-    auth.onAuthStateChanged(user => {
+    // 3. 앱 진입 로직 (버튼 클릭시에만 실행)
+    async function enterApp() {
+      const user = auth.currentUser;
       if (user) {
         showMainContents(user);
       } else {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+          const result = await auth.signInWithPopup(provider);
+          showMainContents(result.user);
+        } catch (error) {
+          console.error("로그인 에러:", error);
+          alert("로그인에 실패했습니다.");
+        }
+      }
+    }
+
+    // 로그인 상태 변화 감지
+    auth.onAuthStateChanged(user => {
+      if (!user) {
         document.getElementById('login-screen').style.display = 'block';
         document.getElementById('main-screen').style.display = 'none';
       }
     });
 
+    // 4. 메인 화면 전환 및 로드
     async function showMainContents(user) {
       await loadChallenges(user.uid);
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-screen').style.display = 'block';
       document.getElementById('welcome-msg').innerText = `${user.displayName}님의 100일 챌린지 현황`;
-      showBottomQuote();
     }
 
+    // 5. 챌린지 데이터 함수들
     async function loadChallenges(uid) {
       const snapshot = await db.collection('challenges').where('uid', '==', uid).get();
       const listDiv = document.getElementById('challenge-list');
@@ -409,7 +354,7 @@
       summaryList.innerHTML = '';
 
       if (snapshot.empty) {
-        summaryList.innerHTML = '<p style="color:#ccc; font-size:0.9rem;">💡 챌린지를 추가하고 목표 달성을 시작하세요!</p>';
+        summaryList.innerHTML = '<p style="color:#ccc; font-size:0.9rem;">💡 챌린지를 추가하고 목표를 달성하세요!</p>';
         return;
       }
 
@@ -449,29 +394,47 @@
     }
 
     async function createNewChallenge() {
-      const title = prompt("어떤 챌린지를 시작할까요?\n\n예시:\n- 매일 운동 30분\n- 영어 단어 20개\n- 물 2L 마시기");
+      const title = prompt("목표를 입력하세요 (예: 매일 운동 30분):");
       if (!title) return;
-      await db.collection('challenges').add({ 
-        uid: auth.currentUser.uid, 
-        title, 
-        completedDays: [], 
-        createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+      await db.collection('challenges').add({
+        uid: auth.currentUser.uid,
+        title,
+        completedDays: [],
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       loadChallenges(auth.currentUser.uid);
     }
 
     async function toggleDay(docId, day, completedDays) {
-      const newDays = completedDays.includes(day) 
-        ? completedDays.filter(d => d !== day) 
+      const newDays = completedDays.includes(day)
+        ? completedDays.filter(d => d !== day)
         : [...completedDays, day];
       await db.collection('challenges').doc(docId).update({ completedDays: newDays });
       loadChallenges(auth.currentUser.uid);
     }
 
     async function deleteChallenge(docId) {
-      if (confirm("정말 삭제할까요?\n\n⚠️ 삭제하면 복구할 수 없습니다.")) {
+      if (confirm("정말 삭제하시겠습니까?")) {
         await db.collection('challenges').doc(docId).delete();
         loadChallenges(auth.currentUser.uid);
+      }
+    }
+
+    // 6. PWA 설치
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-banner').style.display = 'block';
+    });
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('install-banner').style.display = 'none';
+        });
       }
     }
   </script>
