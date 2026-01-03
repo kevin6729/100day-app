@@ -87,7 +87,13 @@
   .entry-screen h1 { font-size: 1.7rem; }
   .grid-container { gap: 4px; }
   .day-cell { font-size: 9px; }
-  .list-header { flex-direction: column; align-items: flex-start; }
+  .list-header {
+  display: flex;
+  justify-content: space-between; /* 왼쪽 끝과 오른쪽 끝으로 배치 */
+  align-items: center;           /* 제목과 버튼의 높이 정렬 */
+  margin-bottom: 25px;
+  width: 100%;                   /* 너비를 꽉 채워서 끝으로 보냄 */
+}
   .backup-banner { flex-direction: column; }
   .backup-banner button { margin: 10px 0 0 0; }
   .quote-text { font-size: 1rem; }
@@ -757,3 +763,4 @@
   </script>
 </body>
 </html>
+
