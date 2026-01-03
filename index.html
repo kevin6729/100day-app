@@ -27,10 +27,17 @@
     .entry-screen { text-align: center; padding: 60px 20px 40px; background: #fff; border-radius: 20px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .entry-screen h1 { font-size: 2.2rem; margin-bottom: 15px; color: #1a1a1b; font-weight: 700; }
     .entry-screen .subtitle { font-size: 1.2rem; color: #555; margin-bottom: 25px; }
-    .btn-main { background: #4285F4; color: white; border: none; padding: 16px 35px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(66,133,244,0.3); transition: 0.2s; }
+    .btn-main { background: #4285F4; color: white; border: none; padding: 16px 35px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(66,133,244,0.3); transition: 0.2s; margin: 5px; }
     .btn-main:hover { background: #3367d6; transform: translateY(-2px); }
-    .btn-share { background: #34C759; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px 5px; font-size: 1rem; transition: 0.2s; }
-    .btn-share:hover { background: #28a745; transform: translateY(-2px); }
+    .btn-secondary { background: #34C759; color: white; border: none; padding: 16px 35px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(52,199,89,0.3); transition: 0.2s; margin: 5px; }
+    .btn-secondary:hover { background: #28a745; transform: translateY(-2px); }
+    .btn-share { background: #FF9500; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px 5px; font-size: 1rem; transition: 0.2s; }
+    .btn-share:hover { background: #e68600; transform: translateY(-2px); }
+    
+    /* 백업 알림 배너 */
+    .backup-banner { background: linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%); color: white; padding: 12px 20px; text-align: center; border-radius: 10px; margin: 15px 0; display: none; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(255,149,0,0.3); }
+    .backup-banner-text { flex: 1; font-size: 0.9rem; }
+    .backup-banner button { background: white; color: #FF9500; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 10px; white-space: nowrap; }
     
     /* 명언 영역 스타일 */
     .quote-container { margin: 30px auto; padding: 35px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(102,126,234,0.3); text-align: center; max-width: 800px; }
@@ -80,19 +87,21 @@
       .grid-container { gap: 4px; }
       .day-cell { font-size: 9px; }
       .list-header { flex-direction: column; align-items: flex-start; }
+      .backup-banner { flex-direction: column; }
+      .backup-banner button { margin: 10px 0 0 0; }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <!-- 로그인 화면에서만 보이는 스레드 알림 배너 -->
-    <div id="threads-banner-login" class="threads-banner">
+    <!-- 로그인 화면에서만 보이는 카카오톡/스레드 알림 배너 -->
+    <div id="threads-banner-login" class="threads-banner" style="display:none;">
       <p style="font-size: 0.95rem; font-weight: bold; margin-bottom: 8px;">
-        ⚠️ 스레드 이용자 필독!
+        ⚠️ 카카오톡/스레드 이용자 필독!
       </p>
       <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 0;">
         우측 상단 <strong>[⋯]</strong> → <strong>"Safari/Chrome으로 열기"</strong> 클릭 후 이용<br>
-        (스레드 내부 브라우저에서는 구글 로그인이 차단됩니다)
+        (앱 내부 브라우저에서는 구글 로그인이 차단됩니다)
       </p>
     </div>
 
@@ -104,7 +113,8 @@
     <div id="login-screen" class="entry-screen">
       <h1>🔥 100일 챌린지</h1>
       <p class="subtitle">매일 체크하고 목표 달성!</p>
-      <button class="btn-main" onclick="enterApp()">챌린지 시작하기</button>
+      <button class="btn-main" onclick="startAsGuest()">🚀 바로 시작하기</button>
+      <button class="btn-secondary" onclick="loginWithGoogle()">📱 구글 로그인 (데이터 백업)</button>
       <button class="btn-share" onclick="shareApp()">📤 친구에게 공유하기</button>
       
       <div class="quote-container">
@@ -126,6 +136,14 @@
     </div>
 
     <div id="main-screen" style="display:none;">
+      <!-- 게스트 모드 백업 알림 배너 -->
+      <div id="backup-banner" class="backup-banner">
+        <div class="backup-banner-text">
+          💾 <strong>데이터 백업 안내:</strong> 현재 기기에만 저장됩니다. 로그인하시면 영구 보관됩니다!
+        </div>
+        <button onclick="loginWithGoogle()">로그인</button>
+      </div>
+
       <div class="summary-board">
         <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
         <div id="summary-list"></div>
@@ -144,19 +162,23 @@
 
       <div class="highlight-box" style="background: #fff3e0; border-left: 5px solid #ff6b00;">
         <p style="font-size: 1.1rem; font-weight: bold; color: #ff6b00; margin-bottom: 12px;">
-          ⚠️ 스레드(Threads)에서 오신 분들은 반드시 읽어주세요!
+          ⚠️ 카카오톡/스레드(Threads)에서 오신 분들은 반드시 읽어주세요!
         </p>
         <p style="margin-bottom: 15px;">
-          <strong>스레드 앱 내부 브라우저에서는 구글 보안 정책으로 인해 로그인이 차단됩니다.</strong><br>
+          <strong>카카오톡, 스레드 등 앱 내부 브라우저에서는 구글 보안 정책으로 인해 로그인이 차단됩니다.</strong><br>
           아래 3단계만 따라하시면 바로 사용 가능합니다! 👇
         </p>
         <ol style="margin-left: 20px; line-height: 1.9; font-weight: 600;">
           <li>화면 오른쪽 상단의 <strong style="color: #ff6b00;">[점 3개 ⋯]</strong> 또는 <strong style="color: #ff6b00;">[공유 아이콘]</strong>을 터치하세요</li>
-          <li><strong style="color: #ff6b00;">"Safari로 열기"</strong> 또는 <strong style="color: #ff6b00;">"Chrome으로 열기"</strong>를 선택하세요</li>
-          <li>외부 브라우저에서 다시 열리면 <strong style="color: #ff6b00;">"챌린지 시작하기"</strong> 버튼을 눌러 구글 로그인을 진행하세요</li>
+          <li><strong style="color: #ff6b00;">"Safari로 열기"</strong> 또는 <strong style="color: #ff6b00;">"Chrome으로 열기"</strong> 또는 <strong style="color: #ff6b00;">"다른 브라우저로 열기"</strong>를 선택하세요</li>
+          <li>외부 브라우저에서 다시 열리면 <strong style="color: #ff6b00;">"바로 시작하기"</strong> 또는 <strong style="color: #ff6b00;">"구글 로그인"</strong> 버튼을 눌러주세요</li>
         </ol>
+        <p style="margin-top: 15px; padding: 12px; background: #fff; border-radius: 6px; font-size: 0.9rem;">
+          📱 <strong>카카오톡 이용자:</strong> 채팅방 링크 클릭 → 우측 상단 [...] → "다른 브라우저로 열기" 또는 "Safari로 열기"<br>
+          📱 <strong>스레드 이용자:</strong> 게시물 링크 클릭 → 우측 상단 [⋯] → "Safari로 열기" 또는 "Chrome으로 열기"
+        </p>
         <p style="margin-top: 15px; color: #666; font-size: 0.95rem;">
-          💡 <strong>TIP:</strong> 한 번만 로그인하면 다음부터는 자동으로 접속됩니다!
+          💡 <strong>TIP:</strong> 로그인 없이도 바로 시작 가능! 로그인은 데이터 백업용입니다.
         </p>
       </div>
 
@@ -205,7 +227,7 @@
         <ol style="margin-left: 20px; margin-bottom: 0; line-height: 2;">
           <li><strong>챌린지 추가:</strong> 메인 화면에서 <span style="background: #ff7a18; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem;">+ 챌린지 추가</span> 버튼을 눌러 목표를 입력하세요</li>
           <li><strong>매일 체크:</strong> 미션을 완료한 날의 숫자를 터치하면 <span style="background: #4CAF50; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem;">초록색</span>으로 변합니다</li>
-          <li><strong>자동 저장:</strong> 구글 계정에 모든 기록이 저장되어 기기를 바꿔도 안전합니다</li>
+          <li><strong>자동 저장:</strong> 로그인하시면 구글 계정에 모든 기록이 저장되어 기기를 바꿔도 안전합니다</li>
         </ol>
       </div>
 
@@ -260,6 +282,7 @@
       <h3>이 앱이 다른 습관 트래커와 다른 이유</h3>
       <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 5px solid #2196F3; margin: 20px 0;">
         <ul style="margin-left: 20px; line-height: 2; margin-bottom: 0;">
+          <li>✅ <strong>로그인 없이 바로 시작:</strong> 써보고 마음에 들면 로그인해서 백업</li>
           <li>✅ <strong>구글 클라우드 기반 SaaS:</strong> 언제 어디서나 동기화, 데이터 손실 0%</li>
           <li>✅ <strong>시각적 성취감 극대화:</strong> 100칸 그리드가 채워지는 쾌감</li>
           <li>✅ <strong>심리학 기반 설계:</strong> 작은 성공의 누적이 큰 변화를 만드는 "카이젠(Kaizen) 철학" 적용</li>
@@ -291,12 +314,14 @@
 
       <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px; font-size: 0.9rem; color: #666;">
         <p style="margin-bottom: 10px;"><strong>💬 자주 묻는 질문 (FAQ)</strong></p>
+        <p><strong>Q. 로그인 없이도 사용할 수 있나요?</strong><br>
+        A. 네! 바로 시작하기를 누르면 로그인 없이 바로 사용 가능합니다. 로그인은 데이터 백업용입니다.</p>
         <p><strong>Q. 100일을 꼭 연속으로 해야 하나요?</strong><br>
         A. 아니요! 중간에 빠진 날이 있어도 괜찮습니다. 중요한 건 다시 시작하는 것입니다.</p>
         <p><strong>Q. 여러 개의 챌린지를 동시에 진행해도 되나요?</strong><br>
         A. 네! 다만 처음엔 1~2개로 시작해서 익숙해지면 늘리는 것을 추천합니다.</p>
-        <p><strong>Q. 데이터가 사라질 위험은 없나요?</strong><br>
-        A. 구글 Firebase 클라우드에 안전하게 저장되어 영구 보관됩니다.</p>
+        <p><strong>Q. 게스트 모드로 저장한 데이터가 사라지나요?</strong><br>
+        A. 브라우저를 삭제하거나 쿠키를 지우면 사라집니다. 안전하게 보관하려면 로그인해서 백업하세요!</p>
       </div>
     </div>
   </div>
@@ -306,7 +331,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // 1. 전체 명언 데이터
+    // 1. 150개 명언 데이터
     const quotes = [
       { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
       { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
@@ -454,7 +479,10 @@
       { text: "노력하는 삶이 가치 있는 삶이다", author: "익명" },
       { text: "성공하려면 지금 바로 시작하라", author: "익명" },
       { text: "당신의 꿈을 실현하라", author: "익명" },
-      { text: "매일 조금씩 나아가면 목표에 도달한다", author: "익명" }
+      { text: "매일 조금씩 나아가면 목표에 도달한다", author: "익명" },
+      { text: "인생은 당신이 만드는 이야기다", author: "익명" },
+      { text: "작은 승리가 큰 성공을 만든다", author: "익명" },
+      { text: "당신의 잠재력을 깨워라", author: "익명" }
     ];
 
     function showRandomQuote() {
@@ -477,7 +505,73 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // 3. 공유 기능 (수정 완료 - 취소 시 에러 메시지 안 뜸)
+    // 3. 게스트 모드 여부 확인
+    let isGuestMode = false;
+    const STORAGE_KEY = 'challenge100_guest_data';
+
+    // 4. 게스트로 시작
+    function startAsGuest() {
+      isGuestMode = true;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-screen').style.display = 'block';
+      document.getElementById('backup-banner').style.display = 'flex';
+      document.getElementById('welcome-msg').innerText = '나의 100일 챌린지 현황';
+      loadGuestChallenges();
+    }
+
+    // 5. 구글 로그인
+    async function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        const result = await auth.signInWithPopup(provider);
+        
+        // 게스트 데이터가 있으면 Firebase로 마이그레이션
+        if (isGuestMode) {
+          await migrateGuestDataToFirebase(result.user.uid);
+        }
+        
+        showMainContents(result.user);
+      } catch (error) {
+        console.error("로그인 에러:", error);
+        // 인앱 브라우저 체크
+        if (isInAppBrowser()) {
+          document.getElementById('threads-banner-login').style.display = 'block';
+        }
+        alert("로그인이 필요합니다. 카카오톡/스레드 이용 시 우측 상단 메뉴에서 '브라우저로 열기'를 먼저 해주세요!");
+      }
+    }
+
+    // 6. 인앱 브라우저 감지
+    function isInAppBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return (ua.indexOf('FBAN') > -1) || (ua.indexOf('FBAV') > -1) || 
+             (ua.indexOf('Instagram') > -1) || (ua.indexOf('KAKAOTALK') > -1);
+    }
+
+    // 7. 게스트 데이터 → Firebase 마이그레이션
+    async function migrateGuestDataToFirebase(uid) {
+      const guestData = localStorage.getItem(STORAGE_KEY);
+      if (!guestData) return;
+
+      const challenges = JSON.parse(guestData);
+      const batch = db.batch();
+
+      for (const challenge of challenges) {
+        const docRef = db.collection('challenges').doc();
+        batch.set(docRef, {
+          uid: uid,
+          title: challenge.title,
+          completedDays: challenge.completedDays,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+
+      await batch.commit();
+      localStorage.removeItem(STORAGE_KEY); // 마이그레이션 완료 후 삭제
+      alert('✅ 기존 데이터가 안전하게 백업되었습니다!');
+    }
+
+    // 8. 공유 기능
     async function shareApp() {
       const shareData = {
         title: '100일 챌린지 - 습관 만들기 앱',
@@ -488,20 +582,15 @@
       try {
         if (navigator.share) {
           await navigator.share(shareData);
-          // 공유 성공 시 아무 메시지 없음
         } else {
-          // Web Share API 미지원 시 클립보드 복사
           await navigator.clipboard.writeText(window.location.href);
           alert('링크 복사 완료!');
         }
       } catch (err) {
-        // 사용자가 공유를 취소한 경우 (AbortError) 아무것도 안 함
         if (err.name === 'AbortError') {
           console.log('공유 취소됨');
           return;
         }
-        
-        // 다른 에러인 경우에만 클립보드 복사 시도
         try {
           await navigator.clipboard.writeText(window.location.href);
           alert('링크 복사 완료!');
@@ -511,40 +600,33 @@
       }
     }
 
-    // 4. 앱 진입 로직
-    async function enterApp() {
-      const user = auth.currentUser;
+    // 9. 앱 진입 체크
+    auth.onAuthStateChanged(user => {
       if (user) {
         showMainContents(user);
       } else {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        try {
-          const result = await auth.signInWithPopup(provider);
-          showMainContents(result.user);
-        } catch (error) {
-          console.error("로그인 에러:", error);
-          alert("로그인이 필요합니다. 스레드 이용 시 우측 상단 메뉴에서 '브라우저로 열기'를 먼저 해주세요!");
+        // 로그인 안 되어 있고, 게스트 데이터도 없으면 로그인 화면 표시
+        const guestData = localStorage.getItem(STORAGE_KEY);
+        if (guestData && guestData !== '[]') {
+          startAsGuest();
+        } else {
+          document.getElementById('login-screen').style.display = 'block';
+          document.getElementById('main-screen').style.display = 'none';
         }
-      }
-    }
-
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        document.getElementById('login-screen').style.display = 'block';
-        document.getElementById('main-screen').style.display = 'none';
-        document.getElementById('threads-banner-login').style.display = 'block';
       }
     });
 
-    // 5. 화면 전환 및 데이터 로드
+    // 10. 로그인 사용자 메인 화면
     async function showMainContents(user) {
+      isGuestMode = false;
       await loadChallenges(user.uid);
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-screen').style.display = 'block';
-      document.getElementById('threads-banner-login').style.display = 'none';
+      document.getElementById('backup-banner').style.display = 'none';
       document.getElementById('welcome-msg').innerText = `${user.displayName}님의 100일 챌린지 현황`;
     }
 
+    // 11. Firebase 데이터 로드
     async function loadChallenges(uid) {
       const snapshot = await db.collection('challenges').where('uid', '==', uid).get();
       const listDiv = document.getElementById('challenge-list');
@@ -592,18 +674,80 @@
       });
     }
 
+    // 12. 게스트 데이터 로드
+    function loadGuestChallenges() {
+      const guestData = localStorage.getItem(STORAGE_KEY);
+      const challenges = guestData ? JSON.parse(guestData) : [];
+      
+      const listDiv = document.getElementById('challenge-list');
+      const summaryList = document.getElementById('summary-list');
+      listDiv.innerHTML = '';
+      summaryList.innerHTML = '';
+
+      if (challenges.length === 0) {
+        summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가하고 첫걸음을 떼보세요!</p>';
+        return;
+      }
+
+      challenges.forEach((data, index) => {
+        const completedDays = data.completedDays || [];
+        const progress = Math.round((completedDays.length / 100) * 100);
+
+        summaryList.innerHTML += `
+          <div class="summary-item">
+            <div class="summary-info"><span>🔥 ${data.title}</span><span>${progress}%</span></div>
+            <div class="summary-bar-bg"><div class="summary-bar-fill" style="width:${progress}%"></div></div>
+          </div>
+        `;
+
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.innerHTML = `
+          <div class="grid-header">
+            <h3>${data.title}</h3>
+            <button class="del-btn" onclick="deleteGuestChallenge(${index})">삭제</button>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" style="width:${progress}%"></div></div>
+          <div class="grid-container" id="grid-guest-${index}"></div>
+        `;
+        listDiv.appendChild(card);
+
+        const grid = document.getElementById(`grid-guest-${index}`);
+        for (let i = 1; i <= 100; i++) {
+          const cell = document.createElement('div');
+          cell.className = `day-cell ${completedDays.includes(i) ? 'done' : ''}`;
+          cell.innerText = i;
+          cell.onclick = () => toggleGuestDay(index, i, completedDays);
+          grid.appendChild(cell);
+        }
+      });
+    }
+
+    // 13. 챌린지 추가
     async function createNewChallenge() {
       const title = prompt("달성하고 싶은 목표는 무엇인가요?");
       if (!title) return;
-      await db.collection('challenges').add({
-        uid: auth.currentUser.uid,
-        title,
-        completedDays: [],
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      loadChallenges(auth.currentUser.uid);
+
+      if (isGuestMode) {
+        // 게스트 모드
+        const guestData = localStorage.getItem(STORAGE_KEY);
+        const challenges = guestData ? JSON.parse(guestData) : [];
+        challenges.push({ title, completedDays: [] });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(challenges));
+        loadGuestChallenges();
+      } else {
+        // 로그인 사용자
+        await db.collection('challenges').add({
+          uid: auth.currentUser.uid,
+          title,
+          completedDays: [],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        loadChallenges(auth.currentUser.uid);
+      }
     }
 
+    // 14. 날짜 토글 (Firebase)
     async function toggleDay(docId, day, completedDays) {
       const newDays = completedDays.includes(day)
         ? completedDays.filter(d => d !== day)
@@ -612,6 +756,21 @@
       loadChallenges(auth.currentUser.uid);
     }
 
+    // 15. 날짜 토글 (게스트)
+    function toggleGuestDay(index, day, completedDays) {
+      const guestData = localStorage.getItem(STORAGE_KEY);
+      const challenges = JSON.parse(guestData);
+      
+      const newDays = completedDays.includes(day)
+        ? completedDays.filter(d => d !== day)
+        : [...completedDays, day];
+      
+      challenges[index].completedDays = newDays;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(challenges));
+      loadGuestChallenges();
+    }
+
+    // 16. 챌린지 삭제 (Firebase)
     async function deleteChallenge(docId) {
       if (confirm("삭제된 데이터는 복구할 수 없습니다. 정말 삭제할까요?")) {
         await db.collection('challenges').doc(docId).delete();
@@ -619,7 +778,18 @@
       }
     }
 
-    // 6. PWA 설치 배너 제어
+    // 17. 챌린지 삭제 (게스트)
+    function deleteGuestChallenge(index) {
+      if (confirm("삭제된 데이터는 복구할 수 없습니다. 정말 삭제할까요?")) {
+        const guestData = localStorage.getItem(STORAGE_KEY);
+        const challenges = JSON.parse(guestData);
+        challenges.splice(index, 1);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(challenges));
+        loadGuestChallenges();
+      }
+    }
+
+    // 18. PWA 설치 배너 제어
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
