@@ -37,10 +37,10 @@
     .backup-banner-text { flex: 1; font-size: 0.9rem; }
     .backup-banner button { background: white; color: #FF9500; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 10px; white-space: nowrap; }
     
-    /* 명언 영역 스타일 */
-    .quote-container { margin: 30px auto; padding: 35px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(102,126,234,0.3); text-align: center; max-width: 800px; }
-    .quote-text { color: white; font-size: 1.3rem; line-height: 1.7; font-weight: 600; margin-bottom: 15px; font-style: italic; }
-    .quote-author { color: rgba(255,255,255,0.85); font-size: 1rem; }
+    /* 명언 영역 스타일 (크기 축소) */
+    .quote-container { margin: 20px auto; padding: 20px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; box-shadow: 0 8px 20px rgba(102,126,234,0.3); text-align: center; max-width: 700px; }
+    .quote-text { color: white; font-size: 1.1rem; line-height: 1.6; font-weight: 600; margin-bottom: 10px; font-style: italic; }
+    .quote-author { color: rgba(255,255,255,0.85); font-size: 0.9rem; }
     
     /* 메인 대시보드 스타일 */
     .summary-board { background: #1a1a1b; color: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
@@ -90,6 +90,8 @@
       .list-header { flex-direction: column; align-items: flex-start; }
       .backup-banner { flex-direction: column; }
       .backup-banner button { margin: 10px 0 0 0; }
+      .quote-text { font-size: 1rem; }
+      .quote-author { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -121,7 +123,8 @@
         <div class="quote-author" id="quote-author"></div>
       </div>
 
-      <div style="margin: 30px auto; min-height: 100px; text-align: center;">
+      <!-- 광고 크기 축소 -->
+      <div style="margin: 20px auto; max-height: 250px; overflow: hidden; text-align: center;">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-7617624533409809"
@@ -335,7 +338,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // 1. 150개 명언 데이터
+    // JavaScript 코드는 이전과 동일 (150개 명언 포함)
     const quotes = [
       { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
       { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
@@ -496,7 +499,6 @@
     }
     showRandomQuote();
 
-    // 2. Firebase 초기 설정
     firebase.initializeApp({
       apiKey: "AIzaSyCPCVWCmHP1hL7fdph1i1C-NR_LqQhYfFk",
       authDomain: "miracle100-bfaf1.firebaseapp.com",
@@ -508,12 +510,9 @@
 
     const auth = firebase.auth();
     const db = firebase.firestore();
-
-    // 3. 게스트 모드 여부 확인
     let isGuestMode = false;
     const STORAGE_KEY = 'challenge100_guest_data';
 
-    // 4. 게스트로 시작
     function startAsGuest() {
       isGuestMode = true;
       document.getElementById('login-screen').style.display = 'none';
@@ -523,26 +522,20 @@
       loadGuestChallenges();
     }
 
-    // 5. 구글 로그인
     async function loginWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       try {
         const result = await auth.signInWithPopup(provider);
-        
-        // 게스트 데이터가 있으면 Firebase로 마이그레이션
         const guestData = localStorage.getItem(STORAGE_KEY);
         if (guestData && guestData !== '[]') {
           await migrateGuestDataToFirebase(result.user.uid);
         }
-        
-        // 로그인 후에는 Firebase 데이터 로드만 하고 화면 전환은 하지 않음
         await loadChallenges(result.user.uid);
         document.getElementById('backup-banner').style.display = 'none';
         document.getElementById('welcome-msg').innerText = `${result.user.displayName}님의 100일 챌린지 현황`;
         isGuestMode = false;
       } catch (error) {
         console.error("로그인 에러:", error);
-        // 인앱 브라우저 체크
         if (isInAppBrowser()) {
           document.getElementById('threads-banner-login').style.display = 'block';
         }
@@ -550,21 +543,17 @@
       }
     }
 
-    // 6. 인앱 브라우저 감지
     function isInAppBrowser() {
       const ua = navigator.userAgent || navigator.vendor || window.opera;
       return (ua.indexOf('FBAN') > -1) || (ua.indexOf('FBAV') > -1) || 
              (ua.indexOf('Instagram') > -1) || (ua.indexOf('KAKAOTALK') > -1);
     }
 
-    // 7. 게스트 데이터 → Firebase 마이그레이션
     async function migrateGuestDataToFirebase(uid) {
       const guestData = localStorage.getItem(STORAGE_KEY);
       if (!guestData) return;
-
       const challenges = JSON.parse(guestData);
       const batch = db.batch();
-
       for (const challenge of challenges) {
         const docRef = db.collection('challenges').doc();
         batch.set(docRef, {
@@ -574,20 +563,17 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
       }
-
       await batch.commit();
-      localStorage.removeItem(STORAGE_KEY); // 마이그레이션 완료 후 삭제
+      localStorage.removeItem(STORAGE_KEY);
       alert('✅ 기존 데이터가 안전하게 백업되었습니다!');
     }
 
-    // 8. 공유 기능
     async function shareApp() {
       const shareData = {
         title: '100일 챌린지 - 습관 만들기 앱',
         text: '매일 체크하면서 목표를 달성하는 100일 챌린지! 함께 도전해요 🔥',
         url: window.location.href
       };
-
       try {
         if (navigator.share) {
           await navigator.share(shareData);
@@ -609,37 +595,28 @@
       }
     }
 
-    // 9. 앱 진입 체크 (수정: 자동 화면 전환 제거)
-    auth.onAuthStateChanged(user => {
-      // 로그인 상태 변경 시 아무것도 하지 않음
-      // 사용자가 명시적으로 "바로 시작하기" 버튼을 눌러야만 화면 전환
-    });
+    auth.onAuthStateChanged(user => {});
 
-    // 10. Firebase 데이터 로드
     async function loadChallenges(uid) {
       const snapshot = await db.collection('challenges').where('uid', '==', uid).get();
       const listDiv = document.getElementById('challenge-list');
       const summaryList = document.getElementById('summary-list');
       listDiv.innerHTML = '';
       summaryList.innerHTML = '';
-
       if (snapshot.empty) {
         summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가하고 첫걸음을 떼보세요!</p>';
         return;
       }
-
       snapshot.forEach(doc => {
         const data = doc.data();
         const completedDays = data.completedDays || [];
         const progress = Math.round((completedDays.length / 100) * 100);
-
         summaryList.innerHTML += `
           <div class="summary-item">
             <div class="summary-info"><span>🔥 ${data.title}</span><span>${progress}%</span></div>
             <div class="summary-bar-bg"><div class="summary-bar-fill" style="width:${progress}%"></div></div>
           </div>
         `;
-
         const card = document.createElement('div');
         card.className = 'project-card';
         card.innerHTML = `
@@ -651,7 +628,6 @@
           <div class="grid-container" id="grid-${doc.id}"></div>
         `;
         listDiv.appendChild(card);
-
         const grid = document.getElementById(`grid-${doc.id}`);
         for (let i = 1; i <= 100; i++) {
           const cell = document.createElement('div');
@@ -663,32 +639,26 @@
       });
     }
 
-    // 11. 게스트 데이터 로드
     function loadGuestChallenges() {
       const guestData = localStorage.getItem(STORAGE_KEY);
       const challenges = guestData ? JSON.parse(guestData) : [];
-      
       const listDiv = document.getElementById('challenge-list');
       const summaryList = document.getElementById('summary-list');
       listDiv.innerHTML = '';
       summaryList.innerHTML = '';
-
       if (challenges.length === 0) {
         summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가하고 첫걸음을 떼보세요!</p>';
         return;
       }
-
       challenges.forEach((data, index) => {
         const completedDays = data.completedDays || [];
         const progress = Math.round((completedDays.length / 100) * 100);
-
         summaryList.innerHTML += `
           <div class="summary-item">
             <div class="summary-info"><span>🔥 ${data.title}</span><span>${progress}%</span></div>
             <div class="summary-bar-bg"><div class="summary-bar-fill" style="width:${progress}%"></div></div>
           </div>
         `;
-
         const card = document.createElement('div');
         card.className = 'project-card';
         card.innerHTML = `
@@ -700,7 +670,6 @@
           <div class="grid-container" id="grid-guest-${index}"></div>
         `;
         listDiv.appendChild(card);
-
         const grid = document.getElementById(`grid-guest-${index}`);
         for (let i = 1; i <= 100; i++) {
           const cell = document.createElement('div');
@@ -712,20 +681,16 @@
       });
     }
 
-    // 12. 챌린지 추가
     async function createNewChallenge() {
       const title = prompt("달성하고 싶은 목표는 무엇인가요?");
       if (!title) return;
-
       if (isGuestMode) {
-        // 게스트 모드
         const guestData = localStorage.getItem(STORAGE_KEY);
         const challenges = guestData ? JSON.parse(guestData) : [];
         challenges.push({ title, completedDays: [] });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(challenges));
         loadGuestChallenges();
       } else {
-        // 로그인 사용자
         const user = auth.currentUser;
         if (user) {
           await db.collection('challenges').add({
@@ -739,7 +704,6 @@
       }
     }
 
-    // 13. 날짜 토글 (Firebase)
     async function toggleDay(docId, day, completedDays) {
       const newDays = completedDays.includes(day)
         ? completedDays.filter(d => d !== day)
@@ -748,21 +712,17 @@
       loadChallenges(auth.currentUser.uid);
     }
 
-    // 14. 날짜 토글 (게스트)
     function toggleGuestDay(index, day, completedDays) {
       const guestData = localStorage.getItem(STORAGE_KEY);
       const challenges = JSON.parse(guestData);
-      
       const newDays = completedDays.includes(day)
         ? completedDays.filter(d => d !== day)
         : [...completedDays, day];
-      
       challenges[index].completedDays = newDays;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(challenges));
       loadGuestChallenges();
     }
 
-    // 15. 챌린지 삭제 (Firebase)
     async function deleteChallenge(docId) {
       if (confirm("삭제된 데이터는 복구할 수 없습니다. 정말 삭제할까요?")) {
         await db.collection('challenges').doc(docId).delete();
@@ -770,7 +730,6 @@
       }
     }
 
-    // 16. 챌린지 삭제 (게스트)
     function deleteGuestChallenge(index) {
       if (confirm("삭제된 데이터는 복구할 수 없습니다. 정말 삭제할까요?")) {
         const guestData = localStorage.getItem(STORAGE_KEY);
@@ -781,7 +740,6 @@
       }
     }
 
-    // 17. PWA 설치 배너 제어
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
