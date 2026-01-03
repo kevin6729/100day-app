@@ -29,6 +29,8 @@
     .entry-screen .subtitle { font-size: 1.2rem; color: #555; margin-bottom: 25px; }
     .btn-main { background: #4285F4; color: white; border: none; padding: 16px 35px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(66,133,244,0.3); transition: 0.2s; }
     .btn-main:hover { background: #3367d6; transform: translateY(-2px); }
+    .btn-share { background: #34C759; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px 5px; font-size: 1rem; transition: 0.2s; }
+    .btn-share:hover { background: #28a745; transform: translateY(-2px); }
     
     /* 명언 영역 스타일 */
     .quote-container { margin: 30px auto; padding: 35px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(102,126,234,0.3); text-align: center; max-width: 800px; }
@@ -38,15 +40,20 @@
     /* 메인 대시보드 스타일 */
     .summary-board { background: #1a1a1b; color: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
     .summary-board h2 { color: #ff7a18; font-size: 1.6rem; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 25px; border-left: 5px solid #ff7a18; padding-left: 15px; }
+    .summary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
     .summary-item { margin-bottom: 22px; }
     .summary-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; }
     .summary-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 6px; overflow: hidden; }
     .summary-bar-fill { background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%); height: 100%; transition: width 1.2s; }
     
     /* 챌린지 리스트 스타일 */
-    .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
     .list-title { font-size: 1.4rem; border-left: 5px solid #ff7a18; padding-left: 15px; }
-    .btn-add { background: #ff7a18; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-add { background: #ff7a18; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    .btn-add:hover { background: #e66910; }
+    .btn-notification { background: #FF9500; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    .btn-notification:hover { background: #e68600; }
     .project-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 25px; margin-bottom: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .grid-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 20px 0; }
@@ -73,6 +80,9 @@
       .entry-screen h1 { font-size: 1.8rem; }
       .grid-container { gap: 4px; }
       .day-cell { font-size: 9px; }
+      .summary-header { flex-direction: column; align-items: flex-start; }
+      .btn-group { width: 100%; justify-content: flex-start; }
+      .list-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -84,8 +94,8 @@
         ⚠️ 스레드 이용자 필독!
       </p>
       <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 0;">
-        우측 상단 <strong>[⋯]</strong> → <strong>"Safari/Chrome으로 열기"</strong> 클릭 후 이용하세요<br>
-        (앱 내부 브라우저에서는 구글 로그인이 차단됩니다)
+        우측 상단 <strong>[⋯]</strong> → <strong>"Safari/Chrome으로 열기"</strong> 클릭 후 이용<br>
+        (스레드 내부 브라우저에서는 구글 로그인이 차단됩니다)
       </p>
     </div>
 
@@ -98,6 +108,7 @@
       <h1>🔥 100일 챌린지</h1>
       <p class="subtitle">매일 체크하고 목표 달성!</p>
       <button class="btn-main" onclick="enterApp()">챌린지 시작하기</button>
+      <button class="btn-share" onclick="shareApp()">📤 친구에게 공유하기</button>
       
       <div class="quote-container">
         <div class="quote-text" id="quote-text"></div>
@@ -119,20 +130,26 @@
 
     <div id="main-screen" style="display:none;">
       <div class="summary-board">
-        <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
+        <div class="summary-header">
+          <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
+          <button class="btn-share" onclick="shareApp()" style="padding: 8px 16px; font-size: 0.9rem;">📤 공유</button>
+        </div>
         <div id="summary-list"></div>
       </div>
 
       <div class="list-header">
         <h2 class="list-title">나의 챌린지</h2>
-        <button class="btn-add" onclick="createNewChallenge()">+ 챌린지 추가</button>
+        <div class="btn-group">
+          <button class="btn-notification" onclick="showNotificationSettings()">🔔 알림 설정</button>
+          <button class="btn-add" onclick="createNewChallenge()">+ 챌린지 추가</button>
+        </div>
       </div>
       
       <div id="challenge-list"></div>
     </div>
 
     <div class="footer">
-      <h2>📱 100일 챌린지 앱 완벽 가이드</h2>
+      <h2>100일 챌린지 앱 완벽 가이드</h2>
 
       <div class="highlight-box" style="background: #fff3e0; border-left: 5px solid #ff6b00;">
         <p style="font-size: 1.1rem; font-weight: bold; color: #ff6b00; margin-bottom: 12px;">
@@ -179,6 +196,32 @@
         </p>
       </div>
 
+      <h3>🔔 스마트한 알림 기능</h3>
+      <div style="background: #fff8f0; padding: 20px; border-radius: 10px; border-left: 5px solid #FF9500; margin: 20px 0;">
+        <p style="line-height: 1.8;">
+          <strong>매일 저녁 9시 리마인더</strong><br>
+          바쁜 일상 속에서 챌린지를 잊지 않도록 매일 저녁 9시에 알림을 보내드립니다. 
+          알림을 받으려면 메인 화면의 <span style="background: #FF9500; color: white; padding: 2px 8px; border-radius: 4px;">🔔 알림 설정</span> 버튼을 눌러주세요.
+        </p>
+        <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+          💡 <strong>TIP:</strong> 모바일에서는 홈 화면에 추가한 후 알림 권한을 허용하면 더욱 편리합니다!
+        </p>
+      </div>
+
+      <h3>📤 친구와 함께 도전하세요!</h3>
+      <div style="background: #f0f7ff; padding: 20px; border-radius: 10px; border-left: 5px solid #34C759; margin: 20px 0;">
+        <p style="line-height: 1.8;">
+          혼자보다 함께할 때 성공 확률이 <strong style="color: #1976D2;">3배 이상</strong> 높아집니다! 
+          <span style="background: #34C759; color: white; padding: 2px 8px; border-radius: 4px;">📤 공유하기</span> 버튼을 눌러 
+          친구, 가족과 함께 100일 챌린지를 시작해보세요.
+        </p>
+        <ul style="margin: 15px 0 0 20px; line-height: 2;">
+          <li>카카오톡, 인스타그램, 페이스북 등 모든 SNS로 공유 가능</li>
+          <li>함께하는 친구가 많을수록 동기부여 UP!</li>
+          <li>서로의 진행 상황을 공유하며 격려하세요</li>
+        </ul>
+      </div>
+
       <h3>✅ 초간단 3단계 사용법</h3>
       <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0;">
         <ol style="margin-left: 20px; margin-bottom: 0; line-height: 2;">
@@ -188,7 +231,7 @@
         </ol>
       </div>
 
-      <h3 style="margin-top: 40px;">💰 경제적 자유를 위한 습관 투자 전략</h3>
+      <h3 style="margin-top: 40px;">경제적 자유를 위한 습관 투자 전략</h3>
       <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px;">
         성공적인 <strong style="color: #ff7a18;">재테크(Financial Technology)</strong>와 <strong style="color: #ff7a18;">자산관리(Wealth Management)</strong>의 핵심은 
         <strong>"일관성 있는 루틴"</strong>에 있습니다. 워렌 버핏, 레이 달리오 같은 세계적 투자자들도 매일 반복되는 
@@ -236,7 +279,7 @@
         </ul>
       </div>
 
-      <h3>💡 이 앱이 다른 습관 트래커와 다른 이유</h3>
+      <h3>이 앱이 다른 습관 트래커와 다른 이유</h3>
       <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 5px solid #2196F3; margin: 20px 0;">
         <ul style="margin-left: 20px; line-height: 2; margin-bottom: 0;">
           <li>✅ <strong>구글 클라우드 기반 SaaS:</strong> 언제 어디서나 동기화, 데이터 손실 0%</li>
@@ -285,7 +328,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // 1. 전체 명언 데이터 (140여개 전체 포함)
+    // 1. 전체 명언 데이터
     const quotes = [
       { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
       { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
@@ -456,7 +499,112 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // 3. 핵심: 앱 진입 로직 (버튼 클릭 시에만 진입)
+    // 3. 공유 기능
+    async function shareApp() {
+      const shareData = {
+        title: '100일 챌린지 - 습관 만들기 앱',
+        text: '매일 체크하면서 목표를 달성하는 100일 챌린지! 함께 도전해요 🔥',
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+          console.log('공유 성공!');
+        } else {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('링크가 클립보드에 복사되었습니다!\n친구에게 공유해보세요 📋');
+        }
+      } catch (err) {
+        console.error('공유 실패:', err);
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('링크가 클립보드에 복사되었습니다!');
+        } catch (clipboardErr) {
+          alert('공유 기능을 사용할 수 없습니다. 링크를 직접 복사해주세요.');
+        }
+      }
+    }
+
+    // 4. 알림 관련 변수 및 함수
+    let notificationPermission = 'default';
+
+    async function requestNotificationPermission() {
+      if (!('Notification' in window)) {
+        alert('이 브라우저는 알림을 지원하지 않습니다.');
+        return false;
+      }
+
+      if (Notification.permission === 'granted') {
+        return true;
+      }
+
+      if (Notification.permission !== 'denied') {
+        const permission = await Notification.requestPermission();
+        notificationPermission = permission;
+        
+        if (permission === 'granted') {
+          alert('✅ 알림이 활성화되었습니다!\n매일 저녁 9시에 리마인더를 받으실 수 있어요.');
+          scheduleNotifications();
+          return true;
+        } else {
+          alert('❌ 알림 권한이 거부되었습니다.\n브라우저 설정에서 직접 변경하실 수 있습니다.');
+        }
+      }
+      
+      return false;
+    }
+
+    function scheduleNotifications() {
+      if (window.notificationInterval) {
+        clearInterval(window.notificationInterval);
+      }
+
+      window.notificationInterval = setInterval(() => {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        
+        if (hours === 21 && minutes === 0) {
+          sendNotification();
+        }
+      }, 60000);
+    }
+
+    function sendNotification() {
+      if (Notification.permission === 'granted') {
+        const notification = new Notification('🔥 100일 챌린지 알림', {
+          body: '오늘의 챌린지를 완료하셨나요? 지금 체크하세요!',
+          icon: 'icon-192.png',
+          badge: 'icon-192.png',
+          tag: 'daily-reminder',
+          requireInteraction: false,
+          vibrate: [200, 100, 200]
+        });
+
+        notification.onclick = function() {
+          window.focus();
+          this.close();
+        };
+      }
+    }
+
+    function showNotificationSettings() {
+      const enabled = Notification.permission === 'granted';
+      const message = enabled 
+        ? '✅ 알림이 활성화되어 있습니다.\n매일 저녁 9시에 리마인더를 받으실 수 있어요.\n\n알림을 끄시겠습니까?'
+        : '🔔 매일 저녁 9시에 챌린지 리마인더를 받으시겠어요?\n\n알림을 켜시겠습니까?';
+      
+      if (confirm(message)) {
+        if (!enabled) {
+          requestNotificationPermission();
+        } else {
+          alert('브라우저 설정에서 알림을 끌 수 있습니다.\n\n[설정] > [사이트 설정] > [알림]에서 변경해주세요.');
+        }
+      }
+    }
+
+    // 5. 앱 진입 로직
     async function enterApp() {
       const user = auth.currentUser;
       if (user) {
@@ -473,7 +621,6 @@
       }
     }
 
-    // 상태 변화 감지 (자동 전환은 하지 않음)
     auth.onAuthStateChanged(user => {
       if (!user) {
         document.getElementById('login-screen').style.display = 'block';
@@ -481,12 +628,25 @@
       }
     });
 
-    // 4. 화면 전환 및 데이터 로드
+    // 6. 화면 전환 및 데이터 로드
     async function showMainContents(user) {
       await loadChallenges(user.uid);
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-screen').style.display = 'block';
       document.getElementById('welcome-msg').innerText = `${user.displayName}님의 100일 챌린지 현황`;
+      
+      // 알림 권한 요청 (처음 로그인 시)
+      const hasAskedNotification = localStorage.getItem('notificationAsked');
+      if (!hasAskedNotification) {
+        setTimeout(() => {
+          if (confirm('🔔 매일 저녁 9시에 챌린지 리마인더 알림을 받으시겠어요?')) {
+            requestNotificationPermission();
+          }
+          localStorage.setItem('notificationAsked', 'true');
+        }, 2000);
+      } else if (Notification.permission === 'granted') {
+        scheduleNotifications();
+      }
     }
 
     async function loadChallenges(uid) {
@@ -563,7 +723,7 @@
       }
     }
 
-    // 5. PWA 설치 배너 제어
+    // 7. PWA 설치 배너 제어
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
