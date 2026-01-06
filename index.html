@@ -14,15 +14,8 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   
-  <script>
-    if (!window.location.search.includes('me')) {
-      var script = document.createElement('script');
-      script.async = true;
-      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7617624533409809";
-      script.crossOrigin = "anonymous";
-      document.head.appendChild(script);
-    }
-  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7617624533409809"
+       crossorigin="anonymous"></script>
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -70,7 +63,7 @@
     .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin: 10px 0; }
     .progress-fill { background: #1A73E8; height: 100%; transition: width 0.3s; }
     .del-btn { background: #fff0f0; border: 1px solid #ffcccc; color: #ff4444; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
-     
+
     /* 푸터 및 가이드 스타일 */
     .footer { background: #fff; border: 1px solid #eee; border-radius: 20px; padding: 35px; margin-top: 10px; color: #444; }
     .footer h2 { color: #1a1a1b; font-size: 1.5rem; text-align: center; border-bottom: 2px solid #ff7a18; padding-bottom: 15px; margin-bottom: 20px; }
@@ -85,10 +78,10 @@
     
     /* 스레드 배너는 로그인 화면에서만 표시 */
     .threads-banner { background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%); color: white; padding: 15px 20px; text-align: center; border-radius: 10px; margin: 15px 0; box-shadow: 0 4px 15px rgba(255,107,0,0.3); }
-     
+
     /* 메인 화면 공유 버튼 */
     .share-section { text-align: center; margin: 20px 0; }
-     
+
    @media (max-width: 600px) {
   .entry-screen { padding: 25px 15px 20px; }
   .entry-screen h1 { font-size: 1.7rem; }
@@ -100,14 +93,17 @@
   align-items: center;           /* 제목과 버튼의 높이 정렬 */
   margin-bottom: 25px;
   width: 100%;                   /* 너비를 꽉 채워서 끝으로 보냄 */
-}  .backup-banner { flex-direction: column; }
+}
+  .backup-banner { flex-direction: column; }
   .backup-banner button { margin: 10px 0 0 0; }
   .quote-text { font-size: 1rem; }
   .quote-author { font-size: 0.85rem; }
-}  </style>
+}
+  </style>
 </head>
 <body>
   <div class="app">
+    <!-- 로그인 화면에서만 보이는 카카오톡/스레드 알림 배너 -->
     <div id="threads-banner-login" class="threads-banner" style="display:none;">
       <p style="font-size: 0.95rem; font-weight: bold; margin-bottom: 8px;">
         ⚠ 카카오톡/스레드 이용자 필독!
@@ -117,18 +113,19 @@
         (앱 내부 브라우저에서는 구글 로그인이 차단됩니다)
       </p>
     </div>
-     
+
     <div id="install-banner" class="install-banner">
       <div>📱 홈 화면에 추가하여 앱처럼 사용하세요!</div>
       <button onclick="installPWA()">홈 화면에 추가</button>
     </div>
-     
+
     <div id="login-screen" class="entry-screen">
       <h1>🔥 100일 챌린지</h1>
       <p class="subtitle">매일 체크하고 목표 달성!</p>
       <button class="btn-main" onclick="startAsGuest()">🚀 바로 시작하기</button>
-     
+
       <div id="ad-area" style="margin: 20px auto; text-align: center;">
+    <!-- 100일챌린지앱 수평형 -->
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-7617624533409809"
@@ -147,40 +144,43 @@
     </script>
   </div>
 </div>
-     
+
     <div id="main-screen" style="display:none;">
+      <!-- 게스트 모드 백업 알림 배너 -->
       <div id="backup-banner" class="backup-banner">
         <div class="backup-banner-text">
           💾 <strong>데이터 백업 안내:</strong> 현재 기기에만 저장됩니다. 로그인하시면 영구 보관됩니다!
         </div>
         <button onclick="loginWithGoogle()">로그인</button>
       </div>
-     
+
+      <!-- 명언 카드를 메인 화면으로 이동 -->
       <div class="quote-container">
         <div class="quote-text" id="quote-text"></div>
         <div class="quote-author" id="quote-author"></div>
       </div>
-     
+
       <div class="summary-board">
         <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
         <div id="summary-list"></div>
       </div>
-     
+
       <div class="list-header">
         <h2 class="list-title">나의 챌린지</h2>
         <button class="btn-add" onclick="createNewChallenge()">+ 챌린지 추가</button>
       </div>
       
       <div id="challenge-list"></div>
-     
+
+      <!-- 메인 화면 공유 버튼 -->
       <div class="share-section">
         <button class="btn-share" onclick="shareApp()">📤 친구에게 공유하기</button>
       </div>
     </div>
-     
+
     <div class="footer">
       <h2>100일 챌린지 앱 완벽 가이드</h2>
-     
+
       <div class="highlight-box" style="background: #fff3e0; border-left: 5px solid #ff6b00;">
         <p style="font-size: 1.1rem; font-weight: bold; color: #ff6b00; margin-bottom: 12px;">
           ⚠ 카카오톡/스레드(Threads)에서 오신 분들은 반드시 읽어주세요!
@@ -202,7 +202,7 @@
           💡 <strong>TIP:</strong> 로그인 없이도 바로 시작 가능! 로그인은 데이터 백업용입니다.
         </p>
       </div>
-     
+
       <h3>📱 모바일에서 앱처럼 사용하는 방법</h3>
       <div style="background: #f0f7ff; padding: 20px; border-radius: 10px; border-left: 5px solid #2196F3; margin: 20px 0;">
         <p style="font-weight: bold; margin-bottom: 15px; color: #1976D2;">🍎 iPhone (Safari) 사용자</p>
@@ -228,7 +228,7 @@
           • 오프라인에서도 기본 기능 사용 가능
         </p>
       </div>
-     
+
       <h3>📤 친구와 함께 도전하세요!</h3>
       <div style="background: #f0f7ff; padding: 20px; border-radius: 10px; border-left: 5px solid #34C759; margin: 20px 0;">
         <p style="line-height: 1.8;">
@@ -242,7 +242,7 @@
           <li>서로의 진행 상황을 공유하며 격려하세요</li>
         </ul>
       </div>
-     
+
       <h3>✅ 초간단 3단계 사용법</h3>
       <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0;">
         <ol style="margin-left: 20px; margin-bottom: 0; line-height: 2;">
@@ -251,14 +251,14 @@
           <li><strong>자동 저장:</strong> 로그인하시면 구글 계정에 모든 기록이 저장되어 기기를 바꿔도 안전합니다</li>
         </ol>
       </div>
-     
+
       <h3 style="margin-top: 40px;">경제적 자유를 위한 습관 투자 전략</h3>
       <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px;">
         성공적인 <strong style="color: #ff7a18;">재테크(Financial Technology)</strong>와 <strong style="color: #ff7a18;">자산관리(Wealth Management)</strong>의 핵심은 
         <strong>"일관성 있는 루틴"</strong>에 있습니다. 워렌 버핏, 레이 달리오 같은 세계적 투자자들도 매일 반복되는 
         <strong style="color: #ff7a18;">습관의 힘(Habit Stacking)</strong>으로 성공했습니다.
       </p>
-     
+
       <div class="highlight-box" style="background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%); border-left: 5px solid #ff9800;">
         <p style="font-weight: bold; font-size: 1.1rem; margin-bottom: 10px; color: #e65100;">
           📊 복리의 마법 - 1% 법칙을 아시나요?
@@ -269,7 +269,7 @@
           이것이 바로 <strong>복리 효과(Compound Interest)</strong>의 힘입니다.
         </p>
       </div>
-     
+
       <h3>🎯 100일 챌린지로 만드는 고수익 자산 포트폴리오</h3>
       <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
         <p style="font-weight: bold; margin-bottom: 15px; font-size: 1.05rem;">💎 추천 챌린지 목록 (ROI 높은 습관)</p>
@@ -281,14 +281,14 @@
           <li><strong>부수입 프로젝트 100일:</strong> 블로그/유튜브 매일 업로드 → <span style="color: #1976D2;">월 300만원 파이프라인 구축</span></li>
         </ul>
       </div>
-     
+
       <h3>🧠 왜 하필 100일인가? 과학적 근거</h3>
       <p style="line-height: 1.8; margin-bottom: 20px;">
         런던대학교(University College London) 연구에 따르면, 습관이 뇌의 <strong style="color: #ff7a18;">신경 가소성(Neuroplasticity)</strong>을 통해 
         완전히 자동화되려면 평균 <strong>66일에서 254일</strong>이 소요됩니다. <strong>100일</strong>은 이 범위의 최적점으로, 
         대부분의 사람들이 <strong>습관 형성 임계점(Habit Formation Threshold)</strong>을 넘는 시점입니다.
       </p>
-     
+
       <div class="highlight-box">
         <p style="font-weight: bold; font-size: 1.05rem; margin-bottom: 10px;">
           🔬 100일 챌린지의 과학적 효과
@@ -299,7 +299,7 @@
           <li><strong>자기효능감 상승:</strong> 100일 달성 시 자신감 급상승, 다른 목표도 달성 가능해짐</li>
         </ul>
       </div>
-     
+
       <h3>이 앱이 다른 습관 트래커와 다른 이유</h3>
       <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 5px solid #2196F3; margin: 20px 0;">
         <ul style="margin-left: 20px; line-height: 2; margin-bottom: 0;">
@@ -310,7 +310,7 @@
           <li>✅ <strong>무료 + 광고 없는 핵심 기능:</strong> 수익 모델에 방해받지 않는 순수한 습관 관리</li>
         </ul>
       </div>
-     
+
       <h3>📈 100일 후 당신의 자산은 어떻게 변할까요?</h3>
       <p style="line-height: 1.8; margin-bottom: 20px;">
         이 앱을 사용한 사용자들의 평균 성과 (자체 조사):
@@ -323,7 +323,7 @@
           <li>🧘 <strong>정신 자산:</strong> 스트레스 지수 40% 감소, 집중력 2배 향상</li>
         </ul>
       </div>
-     
+
       <div style="text-align: center; margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
         <p style="font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">
           🚀 오늘의 작은 실천이 100일 후 거대한 자산이 됩니다
@@ -332,7 +332,7 @@
           부자들은 결과가 아닌 <strong>시스템</strong>을 만듭니다. 지금 바로 시작하세요!
         </p>
       </div>
-     
+
       <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px; font-size: 0.9rem; color: #666;">
         <p style="margin-bottom: 10px;"><strong>💬 자주 묻는 질문 (FAQ)</strong></p>
         <p><strong>Q. 로그인 없이도 사용할 수 있나요?</strong><br>
@@ -343,7 +343,10 @@
         A. 네! 다만 처음엔 1~2개로 시작해서 익숙해지면 늘리는 것을 추천합니다.</p>
         <p><strong>Q. 게스트 모드로 저장한 데이터가 사라지나요?</strong><br>
         A. 브라우저를 삭제하거나 쿠키를 지우면 사라집니다. 안전하게 보관하려면 로그인해서 백업하세요!</p>
-      </div> <div style="margin-top: 40px; padding: 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; text-align: center; color: white; box-shadow: 0 10px 30px rgba(102,126,234,0.3);">
+      </div> <!-- FAQ 섹션 끝 -->
+      
+      <!-- 👇 불편사항 카드를 여기에 (footer 안) -->
+      <div style="margin-top: 40px; padding: 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; text-align: center; color: white; box-shadow: 0 10px 30px rgba(102,126,234,0.3);">
         <p style="font-size: 1.4rem; font-weight: bold; margin-bottom: 12px;">
           💬 불편사항 & 건의사항
         </p>
@@ -363,10 +366,14 @@
         </p>
       </div>
       
-    </div> </div> <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    </div> <!-- 👈 footer 끝 -->
+  </div> <!-- app 끝 -->
+    
+    
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
+
   <script>
     const quotes = [
       { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
@@ -667,14 +674,14 @@
 { text: "습관은 성공의 자동항법장치다", author: "익명" },
 { text: "작은 변화를 축하하라", author: "익명" }
     ];
-    
+
     function showRandomQuote() {
       const quote = quotes[Math.floor(Math.random() * quotes.length)];
       document.getElementById('quote-text').innerText = `"${quote.text}"`;
       document.getElementById('quote-author').innerText = `- ${quote.author}`;
     }
     showRandomQuote();
-    
+
     firebase.initializeApp({
       apiKey: "AIzaSyBDGRyuJrcE1BSMY080yIHV1WJwUUGI_rs",
       authDomain: "miracle100-bfaf1.firebaseapp.com",
@@ -683,12 +690,12 @@
       messagingSenderId: "367375464724",
       appId: "1:367375464724:web:6fccf8438a9a070f3aea01"
     });
-    
+
     const auth = firebase.auth();
     const db = firebase.firestore();
     let isGuestMode = false;
     const STORAGE_KEY = 'challenge100_guest_data';
-    
+
     function startAsGuest() {
       isGuestMode = true;
       document.getElementById('login-screen').style.display = 'none';
@@ -697,7 +704,7 @@
       document.getElementById('welcome-msg').innerHTML = '나의 100일 챌린지 현황';
       loadGuestChallenges();
     }
-    
+
     async function loginWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       try {
@@ -718,13 +725,13 @@
         alert("로그인이 필요합니다. 카카오톡/스레드 이용 시 우측 상단 메뉴에서 '브라우저로 열기'를 먼저 해주세요!");
       }
     }
-    
+
     function isInAppBrowser() {
       const ua = navigator.userAgent || navigator.vendor || window.opera;
       return (ua.indexOf('FBAN') > -1) || (ua.indexOf('FBAV') > -1) || 
              (ua.indexOf('Instagram') > -1) || (ua.indexOf('KAKAOTALK') > -1);
     }
-    
+
     async function migrateGuestDataToFirebase(uid) {
       const guestData = localStorage.getItem(STORAGE_KEY);
       if (!guestData) return;
@@ -743,7 +750,7 @@
       localStorage.removeItem(STORAGE_KEY);
       alert('✅ 기존 데이터가 안전하게 백업되었습니다!');
     }
-    
+
     async function shareApp() {
       const shareData = {
         title: '100일 챌린지 - 습관 만들기 앱',
@@ -770,16 +777,9 @@
         }
       }
     }
-    
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        loadChallenges(user.uid);
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-screen').style.display = 'block';
-        document.getElementById('welcome-msg').innerHTML = `${user.displayName}님의<br>100일 챌린지 현황`;
-      }
-    });
-    
+
+    auth.onAuthStateChanged(user => {});
+
     async function loadChallenges(uid) {
       const snapshot = await db.collection('challenges').where('uid', '==', uid).get();
       const listDiv = document.getElementById('challenge-list');
@@ -821,7 +821,7 @@
         }
       });
     }
-    
+
     function loadGuestChallenges() {
       const guestData = localStorage.getItem(STORAGE_KEY);
       const challenges = guestData ? JSON.parse(guestData) : [];
@@ -863,7 +863,7 @@
         }
       });
     }
-    
+
     async function createNewChallenge() {
       const title = prompt("달성하고 싶은 목표는 무엇인가요?");
       if (!title) return;
@@ -886,7 +886,7 @@
         }
       }
     }
-    
+
     async function toggleDay(docId, day, completedDays) {
       const newDays = completedDays.includes(day)
         ? completedDays.filter(d => d !== day)
@@ -894,7 +894,7 @@
       await db.collection('challenges').doc(docId).update({ completedDays: newDays });
       loadChallenges(auth.currentUser.uid);
     }
-    
+
     function toggleGuestDay(index, day, completedDays) {
       const guestData = localStorage.getItem(STORAGE_KEY);
       const challenges = JSON.parse(guestData);
@@ -905,14 +905,14 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(challenges));
       loadGuestChallenges();
     }
-    
+
     async function deleteChallenge(docId) {
       if (confirm("삭제된 데이터는 복구할 수 없습니다. 정말 삭제할까요?")) {
         await db.collection('challenges').doc(docId).delete();
         loadChallenges(auth.currentUser.uid);
       }
     }
-    
+
     function deleteGuestChallenge(index) {
       if (confirm("삭제된 데이터는 복구할 수 없습니다. 정말 삭제할까요?")) {
         const guestData = localStorage.getItem(STORAGE_KEY);
@@ -922,14 +922,14 @@
         loadGuestChallenges();
       }
     }
-    
+
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       document.getElementById('install-banner').style.display = 'block';
     });
-    
+
     function installPWA() {
       if (deferredPrompt) {
         deferredPrompt.prompt();
