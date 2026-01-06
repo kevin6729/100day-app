@@ -116,8 +116,9 @@
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
         <script>
+           // ?me 주소가 아니거나 localStorage에 기록이 없을 때만 광고 실행
            if (!isAdFree) {
-             (adsbygoogle = window.adsbygoogle || []).push({});
+             (window.adsbygoogle = window.adsbygoogle || []).push({});
            } else {
              document.getElementById('ad-area').style.display = 'none';
            }
@@ -155,26 +156,11 @@
 
     <div class="footer">
       <h2>100일 챌린지 앱 완벽 가이드</h2>
-      <div class="highlight-box" style="background: #fff3e0; border-left: 5px solid #ff6b00;">
-        <p style="font-size: 1.1rem; font-weight: bold; color: #ff6b00; margin-bottom: 12px;">
-          ⚠️ 카카오톡/스레드(Threads)에서 오신 분들은 반드시 읽어주세요!
-        </p>
-        <p style="margin-bottom: 15px;">
-          <strong>카카오톡, 스레드 등 앱 내부 브라우저에서는 구글 보안 정책으로 인해 로그인이 차단됩니다.</strong><br>
-          아래 3단계만 따라하시면 바로 사용 가능합니다! 👇
-        </p>
-        <ol style="margin-left: 20px; line-height: 1.9; font-weight: 600;">
-          <li>화면 오른쪽 상단의 <strong style="color: #ff6b00;">[점 3개 ⋯]</strong> 또는 <strong style="color: #ff6b00;">[공유 아이콘]</strong>을 터치하세요</li>
-          <li><strong style="color: #ff6b00;">"Safari로 열기"</strong> 또는 <strong style="color: #ff6b00;">"Chrome으로 열기"</strong>를 선택하세요</li>
-          <li>외부 브라우저에서 다시 열리면 <strong style="color: #ff6b00;">"바로 시작하기"</strong> 버튼을 눌러주세요</li>
-        </ol>
+      <div class="highlight-box">
+        <p><strong>💡 TIP 1:</strong> 챌린지 <strong>제목을 클릭</strong>하면 다음 날짜가 자동 체크됩니다!</p>
+        <p><strong>📊 TIP 2:</strong> <strong>성취도(%)가 높은</strong> 목표가 자동으로 맨 위에 표시됩니다.</p>
       </div>
-      <h3>📱 모바일에서 앱처럼 사용하는 방법</h3>
-      <h3>🧠 왜 하필 100일인가? 과학적 근거</h3>
-      <div style="text-align: center; margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
-        <p style="font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">🚀 오늘의 작은 실천이 100일 후 거대한 자산이 됩니다</p>
-        <p style="font-size: 1rem; opacity: 0.9;">부자들은 결과가 아닌 <strong>시스템</strong>을 만듭니다. 지금 바로 시작하세요!</p>
-      </div>
+      <p>매일의 작은 습관이 경제적 자유와 성공으로 가는 가장 확실한 길입니다.</p>
     </div>
   </div>
   
@@ -183,9 +169,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // [원본 명언 리스트 수백개] - 사용자님의 원본 파일에서 명언 리스트를 모두 복사해서 이곳에 넣으세요.
+    // 명언 리스트 (원본 수백개 유지 권장)
     const quotes = [
-      { text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
+{ text: "성공은 매일의 작은 노력이 모여 만들어집니다", author: "로버트 콜리어" },
       { text: "오늘 할 수 있는 일을 내일로 미루지 마라", author: "벤자민 프랭클린" },
       { text: "위대한 성취는 작은 시작에서 비롯됩니다", author: "공자" },
       { text: "꿈을 이루기 위해서는 먼저 깨어나야 한다", author: "조엘 브라운" },
@@ -505,37 +491,32 @@
     let isGuestMode = false;
     const STORAGE_KEY = 'challenge100_guest_data';
 
-    // [업그레이드된 로드 함수] - 성취도순 정렬 포함
+    // [중요] 데이터 정렬 및 로드 기능 (로그인용)
     async function loadChallenges(uid) {
       const snapshot = await db.collection('challenges').where('uid', '==', uid).get();
       let rawData = [];
       snapshot.forEach(doc => rawData.push({ id: doc.id, ...doc.data() }));
-
-      // 정렬: 달성 개수 내림차순
       rawData.sort((a, b) => (b.completedDays?.length || 0) - (a.completedDays?.length || 0));
-
       renderList(rawData);
     }
 
+    // [중요] 데이터 정렬 및 로드 기능 (게스트용)
     function loadGuestChallenges() {
       const guestData = localStorage.getItem(STORAGE_KEY);
       const challenges = guestData ? JSON.parse(guestData) : [];
-      
-      // 원본 인덱스를 포함한 정렬용 배열
       let sorted = challenges.map((d, i) => ({ ...d, originalIndex: i }))
                              .sort((a, b) => (b.completedDays?.length || 0) - (a.completedDays?.length || 0));
-
       renderList(sorted);
     }
 
+    // 화면 그리기 통합 함수
     function renderList(items) {
       const listDiv = document.getElementById('challenge-list');
       const summaryList = document.getElementById('summary-list');
-      listDiv.innerHTML = '';
-      summaryList.innerHTML = '';
+      listDiv.innerHTML = ''; summaryList.innerHTML = '';
 
       if (items.length === 0) {
-        summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가하고 첫걸음을 떼보세요!</p>';
+        summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가해보세요!</p>';
         return;
       }
 
@@ -548,20 +529,18 @@
           <div class="summary-item">
             <div class="summary-info"><span>🔥 ${data.title}</span><span>${progress}%</span></div>
             <div class="summary-bar-bg"><div class="summary-bar-fill" style="width:${progress}%"></div></div>
-          </div>
-        `;
+          </div>`;
 
         const card = document.createElement('div');
         card.className = 'project-card';
         card.innerHTML = `
           <div class="grid-header">
             <h3 onclick='${isGuestMode ? `toggleNextGuestDay(${uniqueId}, ${JSON.stringify(completedDays)})` : `toggleNextDay("${uniqueId}", ${JSON.stringify(completedDays)})`}' 
-                style="cursor:pointer; text-decoration:underline;">${data.title}</h3>
+                style="cursor:pointer; text-decoration:underline; text-underline-offset:4px;">${data.title}</h3>
             <button class="del-btn" onclick='${isGuestMode ? `deleteGuestChallenge(${uniqueId})` : `deleteChallenge("${uniqueId}")`}'>삭제</button>
           </div>
           <div class="progress-bg"><div class="progress-fill" style="width:${progress}%"></div></div>
-          <div class="grid-container" id="grid-${uniqueId}"></div>
-        `;
+          <div class="grid-container" id="grid-${uniqueId}"></div>`;
         listDiv.appendChild(card);
         const grid = document.getElementById(`grid-${uniqueId}`);
         for (let i = 1; i <= 100; i++) {
@@ -574,7 +553,7 @@
       });
     }
 
-    // 자동 체크 유틸리티
+    // 자동 체크 로직
     async function toggleNextDay(id, days) {
       const next = Array.from({length:100},(_,i)=>i+1).find(d => !days.includes(d));
       if(next) await toggleDay(id, next, days);
@@ -584,7 +563,18 @@
       if(next) toggleGuestDay(idx, next, days);
     }
 
-    // 나머지 원본 기능들 (생략 없이 유지)
+    // 로그인 및 게스트 시작
+    async function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        const result = await auth.signInWithPopup(provider);
+        const guestData = localStorage.getItem(STORAGE_KEY);
+        if (guestData && guestData !== '[]') await migrateGuestDataToFirebase(result.user.uid);
+        await loadChallenges(result.user.uid);
+        document.getElementById('backup-banner').style.display = 'none';
+        isGuestMode = false;
+      } catch (e) { alert("로그인 실패: " + e.message); }
+    }
     function startAsGuest() {
       isGuestMode = true;
       document.getElementById('login-screen').style.display = 'none';
@@ -592,7 +582,52 @@
       document.getElementById('backup-banner').style.display = 'flex';
       loadGuestChallenges();
     }
+
+    // 챌린지 생성, 삭제, 체크 로직
+    async function createNewChallenge() {
+      const t = prompt("목표를 입력하세요"); if(!t) return;
+      if(isGuestMode) {
+        const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        d.push({title:t, completedDays:[]}); localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+        loadGuestChallenges();
+      } else {
+        await db.collection('challenges').add({uid:auth.currentUser.uid, title:t, completedDays:[], createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        loadChallenges(auth.currentUser.uid);
+      }
+    }
+    async function toggleDay(id, day, days) {
+      const newDays = days.includes(day) ? days.filter(d => d !== day) : [...days, day];
+      await db.collection('challenges').doc(id).update({ completedDays: newDays });
+      loadChallenges(auth.currentUser.uid);
+    }
+    function toggleGuestDay(idx, day, days) {
+      const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      d[idx].completedDays = days.includes(day) ? days.filter(d => d !== day) : [...days, day];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); loadGuestChallenges();
+    }
+    async function deleteChallenge(id) { if(confirm("삭제할까요?")) { await db.collection('challenges').doc(id).delete(); loadChallenges(auth.currentUser.uid); } }
+    function deleteGuestChallenge(idx) { if(confirm("삭제할까요?")) { const d = JSON.parse(localStorage.getItem(STORAGE_KEY)); d.splice(idx,1); localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); loadGuestChallenges(); } }
+
+    async function migrateGuestDataToFirebase(uid) {
+      const guestData = localStorage.getItem(STORAGE_KEY);
+      if (!guestData) return;
+      const challenges = JSON.parse(guestData);
+      const batch = db.batch();
+      for (const challenge of challenges) {
+        const docRef = db.collection('challenges').doc();
+        batch.set(docRef, { uid: uid, title: challenge.title, completedDays: challenge.completedDays, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      }
+      await batch.commit(); localStorage.removeItem(STORAGE_KEY); alert('데이터가 안전하게 백업되었습니다!');
+    }
+
+    async function shareApp() {
+      const data = { title: '100일 챌린지', text: '함께 습관을 만들어봐요!', url: window.location.href };
+      try { await navigator.share(data); } catch (e) { navigator.clipboard.writeText(window.location.href); alert('링크 복사 완료!'); }
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('install-banner').style.display = 'block'; });
+    function installPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.getElementById('install-banner').style.display = 'none'; }); } }
   </script>
 </body>
 </html>
-
