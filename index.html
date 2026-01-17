@@ -37,13 +37,10 @@
     .backup-banner-text { flex: 1; font-size: 0.9rem; }
     .backup-banner button { background: white; color: #FF9500; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 10px; white-space: nowrap; }
     
-    /* 명언 영역 스타일 */
-    .quote-container { margin: 20px auto; padding: 20px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; box-shadow: 0 8px 20px rgba(102,126,234,0.3); text-align: center; }
-    .quote-text { color: white; font-size: 1.1rem; line-height: 1.6; font-weight: 600; margin-bottom: 10px; font-style: italic; }
-    .quote-author { color: rgba(255,255,255,0.85); font-size: 0.9rem; }
-    
-    /* 광고 영역 */
-    .ad-container { margin: 15px 0; text-align: center; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+   /* 명언 영역 스타일 (크기 축소) */
+.quote-container { margin: 20px auto; padding: 20px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; box-shadow: 0 8px 20px rgba(102,126,234,0.3); text-align: center; }
+.quote-text { color: white; font-size: 1.1rem; line-height: 1.6; font-weight: 600; margin-bottom: 10px; font-style: italic; }
+.quote-author { color: rgba(255,255,255,0.85); font-size: 0.9rem; }
     
     /* 메인 대시보드 스타일 */
     .summary-board { background: #1a1a1b; color: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
@@ -52,9 +49,6 @@
     .summary-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; }
     .summary-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 6px; overflow: hidden; }
     .summary-bar-fill { background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%); height: 100%; transition: width 1.2s; }
-    
-    .empty-state { text-align: center; padding: 20px; color: rgba(255,255,255,0.6); }
-    .empty-state-icon { font-size: 3rem; margin-bottom: 10px; }
     
     /* 챌린지 리스트 스타일 */
     .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
@@ -67,7 +61,7 @@
     .day-cell { aspect-ratio: 1/1; background: #f0f0f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; color: #777; transition: 0.2s; }
     .day-cell.done { background: #4CAF50; color: white; font-weight: bold; transform: scale(1.05); }
     .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin: 10px 0; }
-    .progress-fill { background: #1A73E8; height: 100%; transition: width 0.3s; border-radius: 4px; }
+    .progress-fill { background: #1A73E8; height: 100%; transition: width 0.3s; }
     .del-btn { background: #fff0f0; border: 1px solid #ffcccc; color: #ff4444; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
 
     /* 푸터 및 가이드 스타일 */
@@ -88,74 +82,63 @@
     /* 메인 화면 공유 버튼 */
     .share-section { text-align: center; margin: 20px 0; }
 
-    @media (max-width: 600px) {
-      .entry-screen { padding: 25px 15px 20px; }
-      .entry-screen h1 { font-size: 1.7rem; }
-      .grid-container { gap: 4px; }
-      .day-cell { font-size: 9px; }
-      .list-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-        width: 100%;
-      }
-      .backup-banner { flex-direction: column; }
-      .backup-banner button { margin: 10px 0 0 0; }
-      .quote-text { font-size: 1rem; }
-      .quote-author { font-size: 0.85rem; }
-    }
+   @media (max-width: 600px) {
+  .entry-screen { padding: 25px 15px 20px; }
+  .entry-screen h1 { font-size: 1.7rem; }
+  .grid-container { gap: 4px; }
+  .day-cell { font-size: 9px; }
+  .list-header {
+  display: flex;
+  justify-content: space-between; /* 왼쪽 끝과 오른쪽 끝으로 배치 */
+  align-items: center;           /* 제목과 버튼의 높이 정렬 */
+  margin-bottom: 25px;
+  width: 100%;                   /* 너비를 꽉 채워서 끝으로 보냄 */
+}
+  .backup-banner { flex-direction: column; }
+  .backup-banner button { margin: 10px 0 0 0; }
+  .quote-text { font-size: 1rem; }
+  .quote-author { font-size: 0.85rem; }
+}
   </style>
 </head>
 <body>
   <div class="app">
-    <!-- 로그인 화면 -->
-    <div id="login-screen">
-      <!-- 로그인 화면에서만 보이는 카카오톡/스레드 알림 배너 -->
-      <div id="threads-banner-login" class="threads-banner" style="display:none;">
-        <p style="font-size: 0.95rem; font-weight: bold; margin-bottom: 8px;">
-          ⚠️ 카카오톡/스레드 이용자 필독!
-        </p>
-        <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 0;">
-          우측 상단 <strong>[⋯]</strong> → <strong>"Safari/Chrome으로 열기"</strong> 클릭 후 이용<br>
-          (앱 내부 브라우저에서는 구글 로그인이 차단됩니다)
-        </p>
-      </div>
-
-      <!-- 명언 카드 -->
-      <div class="quote-container">
-        <div class="quote-text" id="quote-text"></div>
-        <div class="quote-author" id="quote-author"></div>
-      </div>
-
-      <!-- 바로 시작하기 카드 -->
-      <div class="entry-screen">
-        <h1>🔥 100일 챌린지</h1>
-        <p class="subtitle">매일 체크하고 목표 달성!</p>
-        <button class="btn-main" onclick="startAsGuest()">🚀 바로 시작하기</button>
-      </div>
-
-      <!-- 로그인 화면 광고 -->
-      <div class="ad-container">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-7617624533409809"
-             data-ad-slot="2934193554"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-      </div>
+    <!-- 로그인 화면에서만 보이는 카카오톡/스레드 알림 배너 -->
+    <div id="threads-banner-login" class="threads-banner" style="display:none;">
+      <p style="font-size: 0.95rem; font-weight: bold; margin-bottom: 8px;">
+        ⚠️ 카카오톡/스레드 이용자 필독!
+      </p>
+      <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 0;">
+        우측 상단 <strong>[⋯]</strong> → <strong>"Safari/Chrome으로 열기"</strong> 클릭 후 이용<br>
+        (앱 내부 브라우저에서는 구글 로그인이 차단됩니다)
+      </p>
     </div>
 
-    <!-- 메인 화면 -->
-    <div id="main-screen" style="display:none;">
-      <div id="install-banner" class="install-banner">
-        <div>📱 홈 화면에 추가하여 앱처럼 사용하세요!</div>
-        <button onclick="installPWA()">홈 화면에 추가</button>
-      </div>
+    <div id="install-banner" class="install-banner">
+      <div>📱 홈 화면에 추가하여 앱처럼 사용하세요!</div>
+      <button onclick="installPWA()">홈 화면에 추가</button>
+    </div>
 
+    <div id="login-screen" class="entry-screen">
+      <h1>🔥 100일 챌린지</h1>
+      <p class="subtitle">매일 체크하고 목표 달성!</p>
+      <button class="btn-main" onclick="startAsGuest()">🚀 바로 시작하기</button>
+
+      <div style="margin: 20px auto; text-align: center;">
+    <!-- 100일챌린지앱 수평형 -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7617624533409809"
+         data-ad-slot="2934193554"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+</div>
+
+    <div id="main-screen" style="display:none;">
       <!-- 게스트 모드 백업 알림 배너 -->
       <div id="backup-banner" class="backup-banner">
         <div class="backup-banner-text">
@@ -164,26 +147,17 @@
         <button onclick="loginWithGoogle()">로그인</button>
       </div>
 
-      <!-- 메인 화면 광고 (최상단) -->
-      <div class="ad-container">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-7617624533409809"
-             data-ad-slot="2934193554"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+      <!-- 명언 카드를 메인 화면으로 이동 -->
+      <div class="quote-container">
+        <div class="quote-text" id="quote-text"></div>
+        <div class="quote-author" id="quote-author"></div>
       </div>
 
-      <!-- 현황 대시보드 -->
       <div class="summary-board">
         <h2 id="welcome-msg">나의 100일 챌린지 현황</h2>
         <div id="summary-list"></div>
       </div>
 
-      <!-- 챌린지 리스트 -->
       <div class="list-header">
         <h2 class="list-title">나의 챌린지</h2>
         <button class="btn-add" onclick="createNewChallenge()">+ 챌린지 추가</button>
@@ -282,6 +256,7 @@
         </ul>
       </div>
 
+
       <h3 style="margin-top: 40px;">경제적 자유를 위한 습관 투자 전략</h3>
       <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px;">
         성공적인 <strong style="color: #ff7a18;">재테크(Financial Technology)</strong>와 <strong style="color: #ff7a18;">자산관리(Wealth Management)</strong>의 핵심은 
@@ -328,7 +303,7 @@
           <li><strong>의지력 자동화:</strong> 전두엽 의존도 감소, 기저핵에서 자동 실행 (Automaticity)</li>
           <li><strong>자기효능감 상승:</strong> 100일 달성 시 자신감 급상승, 다른 목표도 달성 가능해짐</li>
         </ul>
-      </div>
+      </div
 
       <h3>📈 100일 후 당신의 자산은 어떻게 변할까요?</h3>
       <p style="line-height: 1.8; margin-bottom: 20px;">
@@ -362,8 +337,9 @@
         A. 네! 다만 처음엔 1~2개로 시작해서 익숙해지면 늘리는 것을 추천합니다.</p>
         <p><strong>Q. 게스트 모드로 저장한 데이터가 사라지나요?</strong><br>
         A. 브라우저를 삭제하거나 쿠키를 지우면 사라집니다. 안전하게 보관하려면 로그인해서 백업하세요!</p>
-      </div>
+      </div> <!-- FAQ 섹션 끝 -->
       
+      <!-- 👇 불편사항 카드를 여기에 (footer 안) -->
       <div style="margin-top: 40px; padding: 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; text-align: center; color: white; box-shadow: 0 10px 30px rgba(102,126,234,0.3);">
         <p style="font-size: 1.4rem; font-weight: bold; margin-bottom: 12px;">
           💬 불편사항 & 건의사항
@@ -384,8 +360,9 @@
         </p>
       </div>
       
-    </div>
-  </div>
+    </div> <!-- 👈 footer 끝 -->
+  </div> <!-- app 끝 -->
+    
     
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -403,16 +380,293 @@
       { text: "실패는 성공의 어머니다", author: "토마스 에디슨" },
       { text: "천 리 길도 한 걸음부터", author: "노자" },
       { text: "작은 기회로부터 위대한 업적이 시작된다", author: "데모스테네스" },
+      { text: "오늘의 나는 어제의 선택이 만든 결과다", author: "익명" },
+      { text: "꾸준함은 천재를 이긴다", author: "익명" },
+      { text: "포기하지 않으면 실패하지 않는다", author: "잭 마" },
+      { text: "성공은 습관의 결과다", author: "아리스토텔레스" },
+      { text: "오늘이 남은 인생의 첫날이다", author: "익명" },
+      { text: "행동이 모든 성공의 기초다", author: "파블로 피카소" },
+      { text: "준비된 자에게 기회는 온다", author: "루이 파스퇴르" },
+      { text: "미래는 현재 우리가 무엇을 하는가에 달려있다", author: "마하트마 간디" },
+      { text: "목표가 없으면 아무것도 이룰 수 없다", author: "지그 지글러" },
+      { text: "변화는 선택이다. 성장은 결과다", author: "익명" },
+      { text: "할 수 있다고 생각하면 할 수 있다", author: "버질" },
+      { text: "성공의 열쇠는 시작하는 용기다", author: "존 베린저" },
+      { text: "멈추지 않는 한 얼마나 천천히 가도 상관없다", author: "공자" },
+      { text: "당신의 한계는 당신의 상상력뿐이다", author: "익명" },
+      { text: "작은 진보라도 진보는 진보다", author: "익명" },
+      { text: "노력하는 자는 꿈을 말하고, 노력하지 않는 자는 불만을 말한다", author: "익명" },
+      { text: "오늘 심은 씨앗이 내일의 열매가 된다", author: "익명" },
+      { text: "성공은 마음먹기에 달려있다", author: "나폴레옹 힐" },
+      { text: "당신이 바꾸고 싶은 변화가 되어라", author: "마하트마 간디" },
+      { text: "성공은 열정을 잃지 않고 실패에서 실패로 걸어가는 것이다", author: "윈스턴 처칠" },
+      { text: "행운은 준비와 기회가 만났을 때 일어난다", author: "세네카" },
+      { text: "가장 어두운 밤이 지나면 가장 밝은 아침이 온다", author: "익명" },
+      { text: "목표를 이루는 유일한 방법은 행동하는 것이다", author: "월트 디즈니" },
+      { text: "당신이 생각하는 것이 당신을 만든다", author: "붓다" },
+      { text: "불가능은 없다. 단어 자체가 나는 가능하다고 말하고 있다", author: "오드리 헵번" },
+      { text: "성공하려면 먼저 실패를 두려워하지 말아야 한다", author: "마이클 조던" },
+      { text: "최고가 되려면 최선을 다해야 한다", author: "빈스 롬바르디" },
+      { text: "지금 이 순간이 가장 중요하다", author: "익명" },
+      { text: "위대함은 결코 주어지는 것이 아니라 쟁취하는 것이다", author: "드웨인 존슨" },
+      { text: "당신의 시간은 제한되어 있다. 다른 사람의 삶을 살지 마라", author: "스티브 잡스" },
+      { text: "성공의 90%는 그냥 나타나는 것이다", author: "우디 앨런" },
+      { text: "실패한 적이 없는 사람은 새로운 것을 시도한 적이 없는 사람이다", author: "알버트 아인슈타인" },
+      { text: "인내와 끈기는 무적이다", author: "익명" },
+      { text: "어제로부터 배우고, 오늘을 살고, 내일을 희망하라", author: "알버트 아인슈타인" },
+      { text: "긍정적인 태도는 긍정적인 결과를 만든다", author: "익명" },
+      { text: "목표는 꿈에 기한을 정한 것이다", author: "나폴레옹 힐" },
+      { text: "진정한 실패는 시도하지 않는 것이다", author: "조지 클루니" },
+      { text: "성공은 준비가 기회를 만났을 때 일어난다", author: "바비 언서" },
+      { text: "당신이 상상할 수 있다면, 이룰 수 있다", author: "월트 디즈니" },
+      { text: "지금 시작하라. 완벽한 때는 없다", author: "익명" },
+      { text: "당신의 유일한 한계는 당신 자신이다", author: "익명" },
+      { text: "성공은 결코 우연이 아니다", author: "익명" },
+      { text: "모든 성취는 시도하려는 의지에서 시작된다", author: "제임스 워너" },
+      { text: "꿈을 꾸는 것만으로는 부족하다. 행동하라", author: "익명" },
+      { text: "어려운 일을 하는 것이 쉬운 삶을 만든다", author: "레스 브라운" },
+      { text: "성공의 비결은 목표에 집중하는 것이다", author: "익명" },
+      { text: "당신이 원하는 것을 얻기 위해 노력하라", author: "익명" },
+      { text: "오늘 최선을 다하면 내일은 더 나아진다", author: "익명" },
+      { text: "성공은 준비와 노력의 결과다", author: "콜린 파월" },
+      { text: "당신의 태도가 당신의 고도를 결정한다", author: "지그 지글러" },
+      { text: "두려움을 극복하는 유일한 방법은 행동하는 것이다", author: "익명" },
+      { text: "매일 조금씩 나아지는 것이 완벽으로 가는 길이다", author: "익명" },
+      { text: "성공하는 사람과 실패하는 사람의 차이는 행동이다", author: "익명" },
+      { text: "목표를 향해 한 걸음씩 나아가라", author: "익명" },
+      { text: "오늘의 고통은 내일의 힘이 된다", author: "익명" },
+      { text: "성공은 매일 반복되는 작은 습관의 결과다", author: "익명" },
+      { text: "당신이 할 수 있는 최선을 다하라", author: "앤드류 카네기" },
+      { text: "성공은 마지막까지 포기하지 않는 자의 것이다", author: "익명" },
+      { text: "당신의 현재는 과거의 선택, 미래는 오늘의 선택이다", author: "익명" },
+      { text: "목표를 세우고 계획을 실행하라", author: "익명" },
+      { text: "성공하려면 먼저 시작해야 한다", author: "익명" },
+      { text: "노력은 배신하지 않는다", author: "익명" },
+      { text: "오늘 하루를 최선으로 살아라", author: "익명" },
+      { text: "성공은 준비된 자에게만 온다", author: "익명" },
+      { text: "당신의 꿈은 당신의 노력만큼 커진다", author: "익명" },
+      { text: "포기하지 않는 한 가능성은 무한하다", author: "익명" },
+      { text: "매일 성장하는 자신을 만들어라", author: "익명" },
+      { text: "성공의 지름길은 없다. 꾸준함이 답이다", author: "익명" },
+      { text: "당신의 노력이 당신의 미래를 만든다", author: "익명" },
+      { text: "목표를 향한 여정을 즐겨라", author: "익명" },
+      { text: "성공은 하루아침에 오지 않는다", author: "익명" },
+      { text: "당신이 할 수 있다고 믿으면 반은 이룬 것이다", author: "시어도어 루스벨트" },
+      { text: "실패를 두려워하지 말고 도전하라", author: "익명" },
+      { text: "매일 조금씩 발전하는 것이 성공이다", author: "익명" },
+      { text: "당신의 한계를 넘어서라", author: "익명" },
+      { text: "성공은 올바른 습관에서 시작된다", author: "익명" },
+      { text: "오늘 할 수 있는 일을 미루지 마라", author: "익명" },
+      { text: "당신의 목표를 명확히 하라", author: "익명" },
+      { text: "성공하는 사람은 끝까지 간다", author: "익명" },
+      { text: "당신의 열정이 성공을 만든다", author: "익명" },
+      { text: "매일 최선을 다하는 것이 성공의 시작이다", author: "익명" },
+      { text: "목표를 이루기 위해 행동하라", author: "익명" },
+      { text: "성공은 계획과 실행의 결과다", author: "익명" },
+      { text: "당신의 노력은 헛되지 않는다", author: "익명" },
+      { text: "오늘의 선택이 내일을 만든다", author: "익명" },
+      { text: "성공하려면 집중하라", author: "익명" },
+      { text: "당신의 가능성을 믿으라", author: "익명" },
+      { text: "매일 성장하는 삶을 살아라", author: "익명" },
+      { text: "목표를 향해 꾸준히 나아가라", author: "익명" },
+      { text: "성공은 당신이 만드는 것이다", author: "익명" },
+      { text: "당신의 미래는 오늘 시작된다", author: "익명" },
+      { text: "노력하는 만큼 성장한다", author: "익명" },
+      { text: "성공하려면 포기하지 마라", author: "익명" },
+      { text: "당신의 꿈을 현실로 만들어라", author: "익명" },
+      { text: "매일 한 걸음씩 앞으로 나아가라", author: "익명" },
+      { text: "목표를 이루는 열쇠는 꾸준함이다", author: "익명" },
+      { text: "성공은 당신의 선택이다", author: "익명" },
+      { text: "당신의 노력이 기적을 만든다", author: "익명" },
+      { text: "오늘 최선을 다하는 것이 성공이다", author: "익명" },
+      { text: "성공하려면 먼저 믿어야 한다", author: "익명" },
+      { text: "당신의 가능성은 무한하다", author: "익명" },
+      { text: "매일 도전하는 삶을 살아라", author: "익명" },
+      { text: "목표를 향한 열정을 잃지 마라", author: "익명" },
+      { text: "성공은 준비된 자의 것이다", author: "익명" },
+      { text: "당신의 행동이 미래를 결정한다", author: "익명" },
+      { text: "노력 없이는 아무것도 이룰 수 없다", author: "익명" },
+      { text: "성공하려면 계속 나아가라", author: "익명" },
+      { text: "당신의 꿈을 포기하지 마라", author: "익명" },
+      { text: "매일 성장하는 자신을 발견하라", author: "익명" },
+      { text: "목표를 이루기 위해 최선을 다하라", author: "익명" },
+      { text: "성공은 당신의 태도에 달려있다", author: "익명" },
+      { text: "당신의 노력은 반드시 보상받는다", author: "익명" },
+      { text: "오늘 시작하지 않으면 내일도 없다", author: "익명" },
+      { text: "성공하려면 행동으로 증명하라", author: "익명" },
+      { text: "당신의 미래는 당신 손에 있다", author: "익명" },
+      { text: "매일 노력하는 것이 성공의 비결이다", author: "익명" },
+      { text: "목표를 향해 끊임없이 도전하라", author: "익명" },
+      { text: "성공은 당신이 얼마나 원하느냐에 달려있다", author: "익명" },
+      { text: "당신의 열정이 길을 만든다", author: "익명" },
+      { text: "노력하는 자만이 성공한다", author: "익명" },
+      { text: "성공하려면 오늘 행동하라", author: "익명" },
+      { text: "당신의 꿈은 당신의 것이다", author: "익명" },
+      { text: "매일 최선을 다하면 기적이 일어난다", author: "익명" },
+      { text: "목표를 이루는 것은 당신의 선택이다", author: "익명" },
+      { text: "성공은 포기하지 않는 자의 몫이다", author: "익명" },
+      { text: "당신의 노력이 당신을 변화시킨다", author: "익명" },
+      { text: "오늘의 노력이 내일의 성공을 만든다", author: "익명" },
+      { text: "성공하려면 꿈을 크게 가져라", author: "익명" },
+      { text: "당신의 가능성을 의심하지 마라", author: "익명" },
+      { text: "매일 성장하는 습관을 만들어라", author: "익명" },
+      { text: "목표를 향해 한 걸음씩 전진하라", author: "익명" },
+      { text: "성공은 당신의 결단에서 시작된다", author: "익명" },
+      { text: "당신의 미래는 오늘 만들어진다", author: "익명" },
+      { text: "노력하는 삶이 가치 있는 삶이다", author: "익명" },
+      { text: "성공하려면 지금 바로 시작하라", author: "익명" },
+      { text: "당신의 꿈을 실현하라", author: "익명" },
+      { text: "매일 조금씩 나아가면 목표에 도달한다", author: "익명" },
+      { text: "인생은 당신이 만드는 이야기다", author: "익명" },
+      { text: "작은 승리가 큰 성공을 만든다", author: "익명" },
+      { text: "당신의 잠재력을 깨워라", author: "익명" },
       { text: "1%의 개선이 매일 쌓이면 1년 후 37배 성장한다", author: "제임스 클리어" },
-      { text: "습관이 바뀌면 인생이 바뀐다", author: "익명" },
-      { text: "100일의 노력은 평생의 자산이 된다", author: "익명" },
-      { text: "작은 습관이 큰 변화를 만든다", author: "익명" },
-      { text: "매일 하는 것이 가끔 잘하는 것보다 낫다", author: "익명" },
-      { text: "성공은 하루의 결과가 아니라 100일의 결과다", author: "익명" },
-      { text: "습관을 정복하는 자가 인생을 정복한다", author: "익명" },
-      { text: "오늘의 선택이 100일 후의 나를 만든다", author: "익명" },
-      { text: "꾸준함이 재능을 이긴다", author: "익명" },
-      { text: "매일 조금씩, 그것이 성공의 비밀이다", author: "익명" }
+{ text: "습관이 바뀌면 인생이 바뀐다", author: "익명" },
+{ text: "100일의 노력은 평생의 자산이 된다", author: "익명" },
+{ text: "작은 습관이 큰 변화를 만든다", author: "익명" },
+{ text: "매일 하는 것이 가끔 잘하는 것보다 낫다", author: "익명" },
+{ text: "성공은 하루의 결과가 아니라 100일의 결과다", author: "익명" },
+{ text: "습관을 정복하는 자가 인생을 정복한다", author: "익명" },
+{ text: "오늘의 선택이 100일 후의 나를 만든다", author: "익명" },
+{ text: "꾸준함이 재능을 이긴다", author: "익명" },
+{ text: "매일 조금씩, 그것이 성공의 비밀이다", author: "익명" },
+{ text: "100일 후 당신은 달라져 있을 것이다", author: "익명" },
+{ text: "작심삼일을 33번 반복하면 100일이다", author: "익명" },
+{ text: "루틴이 당신의 운명을 결정한다", author: "익명" },
+{ text: "시작이 반이다. 계속하는 것이 나머지 반이다", author: "익명" },
+{ text: "한 번에 하루씩, 한 번에 한 걸음씩", author: "익명" },
+{ text: "변화는 결심이 아니라 반복에서 온다", author: "익명" },
+{ text: "당신의 미래는 당신의 일상이 만든다", author: "익명" },
+{ text: "위대함은 반복에서 나온다", author: "익명" },
+{ text: "매일이 새로운 기회다", author: "익명" },
+{ text: "100일은 짧지만 충분히 길다", author: "익명" },
+{ text: "습관은 제2의 천성이다", author: "아리스토텔레스" },
+{ text: "반복이 전문가를 만든다", author: "익명" },
+{ text: "오늘 하지 않으면 내일도 하지 않는다", author: "익명" },
+{ text: "작은 행동이 큰 결과를 만든다", author: "익명" },
+{ text: "매일매일이 투자의 순간이다", author: "익명" },
+{ text: "습관이 운명을 바꾼다", author: "익명" },
+{ text: "지속성이 성공의 열쇠다", author: "익명" },
+{ text: "오늘 한 것이 내일의 나를 만든다", author: "익명" },
+{ text: "100일의 기적을 믿어라", author: "익명" },
+{ text: "매일이 진화의 날이다", author: "익명" },
+{ text: "작은 변화가 큰 혁명이 된다", author: "익명" },
+{ text: "반복은 마스터의 길이다", author: "익명" },
+{ text: "꾸준함이 천재성을 만든다", author: "익명" },
+{ text: "오늘도 한 걸음 더 나아가라", author: "익명" },
+{ text: "습관은 복리로 쌓인다", author: "익명" },
+{ text: "매일의 실천이 기적을 만든다", author: "익명" },
+{ text: "100일은 인생을 바꾸기에 충분하다", author: "익명" },
+{ text: "작은 승리를 축하하라", author: "익명" },
+{ text: "일관성이 탁월함을 만든다", author: "익명" },
+{ text: "오늘 시작하지 않으면 절대 끝낼 수 없다", author: "익명" },
+{ text: "매일이 새로운 시작이다", author: "익명" },
+{ text: "100일의 여정은 첫 걸음에서 시작된다", author: "익명" },
+{ text: "반복이 완벽을 만든다", author: "익명" },
+{ text: "당신의 루틴이 당신의 미래다", author: "익명" },
+{ text: "작은 실천이 큰 자신감을 만든다", author: "익명" },
+{ text: "매일 조금씩 더 나은 사람이 되라", author: "익명" },
+{ text: "습관은 인생의 건축 자재다", author: "익명" },
+{ text: "100일 후엔 다른 사람이 되어 있을 것이다", author: "익명" },
+{ text: "꾸준함은 기적을 낳는다", author: "익명" },
+{ text: "오늘의 선택이 내일의 습관이 된다", author: "익명" },
+{ text: "작은 행동, 큰 변화", author: "익명" },
+{ text: "매일이 기회의 날이다", author: "익명" },
+{ text: "반복이 당신을 정의한다", author: "익명" },
+{ text: "100일은 평생 습관의 시작이다", author: "익명" },
+{ text: "일상이 운명을 만든다", author: "익명" },
+{ text: "작은 진전도 진전이다", author: "익명" },
+{ text: "매일 체크하는 것이 성공의 비결이다", author: "익명" },
+{ text: "습관을 바꾸면 인생이 바뀐다", author: "익명" },
+{ text: "오늘도 목표를 향해 전진하라", author: "익명" },
+{ text: "100일의 도전이 평생의 자산이 된다", author: "익명" },
+{ text: "꾸준함이 모든 것을 이긴다", author: "익명" },
+{ text: "작은 목표를 달성하며 큰 꿈을 이뤄라", author: "익명" },
+{ text: "매일이 성장의 날이다", author: "익명" },
+{ text: "반복은 숙달의 어머니다", author: "익명" },
+{ text: "100일의 여정을 즐겨라", author: "익명" },
+{ text: "습관이 성공을 결정한다", author: "익명" },
+{ text: "오늘 한 것이 내일의 결과가 된다", author: "익명" },
+{ text: "작은 승리가 큰 동기가 된다", author: "익명" },
+{ text: "매일매일이 소중한 기회다", author: "익명" },
+{ text: "꾸준함은 가장 강력한 무기다", author: "익명" },
+{ text: "100일은 새로운 나를 만드는 시간이다", author: "익명" },
+{ text: "반복이 차이를 만든다", author: "익명" },
+{ text: "오늘도 한 번 더 도전하라", author: "익명" },
+{ text: "습관은 자동화된 성공이다", author: "익명" },
+{ text: "작은 실천이 큰 결실을 맺는다", author: "익명" },
+{ text: "매일이 변화의 기회다", author: "익명" },
+{ text: "100일의 기적을 경험하라", author: "익명" },
+{ text: "꾸준함이 천재를 만든다", author: "익명" },
+{ text: "오늘의 습관이 내일의 나를 만든다", author: "익명" },
+{ text: "작은 행동이 큰 변화를 만든다", author: "익명" },
+{ text: "매일 조금씩 더 강해져라", author: "익명" },
+{ text: "반복이 전문성을 만든다", author: "익명" },
+{ text: "100일 후에는 지금과 다른 사람이다", author: "익명" },
+{ text: "습관은 미래를 예측하는 가장 좋은 방법이다", author: "익명" },
+{ text: "오늘도 최선을 다하라", author: "익명" },
+{ text: "작은 목표, 큰 성과", author: "익명" },
+{ text: "매일이 새로운 도전이다", author: "익명" },
+{ text: "꾸준함은 성공의 필수 조건이다", author: "익명" },
+{ text: "100일은 습관을 만들기에 완벽한 시간이다", author: "익명" },
+{ text: "반복이 숙련을 만든다", author: "익명" },
+{ text: "오늘 하나라도 실천하라", author: "익명" },
+{ text: "습관이 당신의 정체성을 만든다", author: "익명" },
+{ text: "작은 변화가 인생을 바꾼다", author: "익명" },
+{ text: "매일이 성장의 기회다", author: "익명" },
+{ text: "100일의 투자가 평생의 수익이 된다", author: "익명" },
+{ text: "꾸준함이 결과를 만든다", author: "익명" },
+{ text: "오늘의 실천이 내일의 성공이다", author: "익명" },
+{ text: "작은 습관이 큰 차이를 만든다", author: "익명" },
+{ text: "매일 한 걸음씩 전진하라", author: "익명" },
+{ text: "반복이 마법을 만든다", author: "익명" },
+{ text: "100일은 새로운 삶의 시작이다", author: "익명" },
+{ text: "습관은 성공의 자동화 시스템이다", author: "익명" },
+{ text: "오늘도 포기하지 마라", author: "익명" },
+{ text: "작은 노력이 큰 성과를 낳는다", author: "익명" },
+{ text: "매일이 변화의 날이다", author: "익명" },
+{ text: "꾸준함은 최고의 전략이다", author: "익명" },
+{ text: "100일 후의 나를 기대하라", author: "익명" },
+{ text: "반복이 탁월함을 만든다", author: "익명" },
+{ text: "오늘 한 것이 미래를 만든다", author: "익명" },
+{ text: "습관이 운명의 설계도다", author: "익명" },
+{ text: "작은 시작이 큰 결과를 만든다", author: "익명" },
+{ text: "매일이 기적의 시작이다", author: "익명" },
+{ text: "100일의 챌린지가 인생을 바꾼다", author: "익명" },
+{ text: "꾸준함은 성공의 보증수표다", author: "익명" },
+{ text: "오늘도 나아가라", author: "익명" },
+{ text: "작은 실천이 큰 습관이 된다", author: "익명" },
+{ text: "매일 조금씩 개선하라", author: "익명" },
+{ text: "반복이 당신을 만든다", author: "익명" },
+{ text: "100일은 변화를 위한 완벽한 기간이다", author: "익명" },
+{ text: "습관은 미래의 나에 대한 투자다", author: "익명" },
+{ text: "오늘의 선택이 100일 후를 결정한다", author: "익명" },
+{ text: "작은 승리를 쌓아가라", author: "익명" },
+{ text: "매일이 성공의 씨앗을 심는 날이다", author: "익명" },
+{ text: "꾸준함이 비범함을 만든다", author: "익명" },
+{ text: "100일의 여정이 평생의 습관이 된다", author: "익명" },
+{ text: "반복이 변화의 핵심이다", author: "익명" },
+{ text: "오늘도 체크하라", author: "익명" },
+{ text: "습관은 성공으로 가는 지름길이다", author: "익명" },
+{ text: "작은 행동이 큰 미래를 만든다", author: "익명" },
+{ text: "매일이 도약의 기회다", author: "익명" },
+{ text: "100일은 인생의 전환점이 될 수 있다", author: "익명" },
+{ text: "꾸준함은 최고의 재능이다", author: "익명" },
+{ text: "오늘 실천하지 않으면 내일도 없다", author: "익명" },
+{ text: "작은 목표를 매일 달성하라", author: "익명" },
+{ text: "매일이 변화의 순간이다", author: "익명" },
+{ text: "반복이 성공의 언어다", author: "익명" },
+{ text: "100일 후 당신은 자랑스러울 것이다", author: "익명" },
+{ text: "습관이 미래의 당신을 만든다", author: "익명" },
+{ text: "오늘도 한 번 더", author: "익명" },
+{ text: "작은 진전이 큰 성공이 된다", author: "익명" },
+{ text: "매일이 진화의 기회다", author: "익명" },
+{ text: "꾸준함은 모든 성공의 기초다", author: "익명" },
+{ text: "100일은 습관 형성의 황금기간이다", author: "익명" },
+{ text: "반복이 실력을 만든다", author: "익명" },
+{ text: "오늘의 체크가 내일의 자신감이 된다", author: "익명" },
+{ text: "습관은 성공의 자동항법장치다", author: "익명" },
+{ text: "작은 변화를 축하하라", author: "익명" }
     ];
 
     function showRandomQuote() {
@@ -455,7 +709,7 @@
         }
         await loadChallenges(result.user.uid);
         document.getElementById('backup-banner').style.display = 'none';
-        document.getElementById('welcome-msg').innerHTML = `${result.user.displayName}님의 100일 챌린지 현황`;
+        document.getElementById('welcome-msg').innerHTML = `${result.user.displayName}님의<br>100일 챌린지 현황`;
         isGuestMode = false;
       } catch (error) {
         console.error("로그인 에러:", error);
@@ -527,7 +781,7 @@
       listDiv.innerHTML = '';
       summaryList.innerHTML = '';
       if (snapshot.empty) {
-        summaryList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💡</div><p>챌린지를 추가하고 첫걸음을 떼보세요!</p></div>';
+        summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가하고 첫걸음을 떼보세요!</p>';
         return;
       }
       snapshot.forEach(doc => {
@@ -570,7 +824,7 @@
       listDiv.innerHTML = '';
       summaryList.innerHTML = '';
       if (challenges.length === 0) {
-        summaryList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💡</div><p>챌린지를 추가하고 첫걸음을 떼보세요!</p></div>';
+        summaryList.innerHTML = '<p style="color:#ccc;">💡 챌린지를 추가하고 첫걸음을 떼보세요!</p>';
         return;
       }
       challenges.forEach((data, index) => {
