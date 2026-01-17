@@ -154,7 +154,7 @@
       </div>
 
       <!-- 👇 메인 화면 광고 영역 (명언 카드 대체) -->
-      <div style="margin: 20px auto; text-align: center; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      <div id="main-ad-container" style="margin: 20px auto; text-align: center; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
   <ins class="adsbygoogle"
        style="display:inline-block;width:300px;height:250px"
        data-ad-client="ca-pub-7617624533409809"
@@ -708,7 +708,11 @@
       document.getElementById('backup-banner').style.display = 'flex';
       document.getElementById('welcome-msg').innerHTML = '나의 100일 챌린지 현황';
       loadGuestChallenges();
-    }
+     // 👇 메인 화면 광고 다시 로드
+  setTimeout(() => {
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  }, 100);
+}
 
     async function loginWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -947,4 +951,5 @@
   </script>
 </body>
 </html>
+
 
